@@ -1,10 +1,9 @@
 <template>
   <div class="q-pa-md row items-start">
+    <div>
+      <div class="text-h6">User info</div>
+    </div>
     <q-card flat bordered class="my-card full-width">
-      <q-card-section>
-        <div class="text-h6">User info</div>
-      </q-card-section>
-
       <q-card-section>
         <q-input v-model="person.name" filled clearable dense :hint="'Name'" :disable="!isEditMode" />
         <q-input v-model="person.email" filled dense clearable :hint="'Email'" class="q-mt-md" :disable="!isEditMode" />
@@ -26,14 +25,14 @@
 </template>
 
 <script lang="ts">
-import { User } from "@/types/entities/user";
+import { ISpUser } from "@/types/entities/user";
 import { useQuasar } from "quasar";
 import { computed, defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "SpUser",
   setup() {
-    const person: User = {
+    const person: ISpUser = {
       id: "123",
       name: "Chuck",
       email: "chuck.horny@seznam.com",
@@ -44,15 +43,15 @@ export default defineComponent({
     const $q = useQuasar();
     const saveProgress = ref<boolean>(false);
 
-    const editBtnLabel = computed(() => {
+    const editBtnLabel = computed((): string => {
       return isEditMode.value ? "Cancel" : "Edit";
     });
 
-    const saveUserInfo = () => {
+    const saveUserInfo = (): void => {
       simulateLoading();
     };
 
-    const simulateLoading = () => {
+    const simulateLoading = (): void => {
       saveProgress.value = true;
 
       // simulate a delay

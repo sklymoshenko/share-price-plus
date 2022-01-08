@@ -33,17 +33,19 @@ import { defineComponent } from "vue";
 import { routes } from "../router/routes";
 
 // Types
-import { RouteAction } from "../types/layout";
+import { IRouteAction } from "../types/layout";
 
 export default defineComponent({
   name: "Default",
   setup() {
     const title: string = "Share Price Plus+";
-    const actions: RouteAction[] | undefined =
-      routes[0].children?.map((route) => ({
-        name: String(route.name),
-        to: route.path
-      })) || [];
+    const actions: IRouteAction[] | undefined =
+      routes[0].children
+        ?.map((route) => ({
+          name: String(route.name),
+          to: `/${route.path}`
+        }))
+        ?.filter((r) => !["Event"].includes(r.name)) || [];
 
     const icons: string[] = ["home", "bar_chart", "person", "article"];
 

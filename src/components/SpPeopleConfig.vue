@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { PersonConfig, Modes } from "../types/spPeopleConfig";
+import { ISpPersonConfig, Modes } from "../types/spPeopleConfig";
 import { computed, defineComponent, PropType, ref } from "vue";
 import SpPersonItem from "./SpPersonItem.vue";
 
@@ -56,31 +56,31 @@ export default defineComponent({
       type: Number
     },
     peopleConfig: {
-      type: Array as PropType<PersonConfig[]>,
+      type: Array as PropType<ISpPersonConfig[]>,
       default: []
     }
   },
   setup({ peopleCount, peopleConfig }, { emit }) {
-    const person = ref<PersonConfig>({
+    const person = ref<ISpPersonConfig>({
       name: "",
       paid: 0,
-      id: 0,
+      id: "",
       ows: 0,
       exceed: 0,
       loaners: []
     });
-    const persons = ref<PersonConfig[]>([...peopleConfig]);
+    const persons = ref<ISpPersonConfig[]>([...peopleConfig]);
     const mode = ref<Modes>("new");
 
-    const btnLabel = computed(() => {
+    const btnLabel = computed((): string => {
       return mode.value === "new" ? "Confirm" : "Save";
     });
 
-    const disableInputs = computed(() => {
+    const disableInputs = computed((): boolean => {
       return persons.value.length === peopleCount && mode.value === "new";
     });
 
-    const confirmModeAction = () => {
+    const confirmModeAction = (): void => {
       if (mode.value === "new") {
         addPersonToConfig();
         return;
@@ -89,7 +89,7 @@ export default defineComponent({
       editPersonsConfig();
     };
 
-    const editPersonsConfig = () => {
+    const editPersonsConfig = (): void => {
       const neededPerson = persons.value.find((p) => p.id === person.value.id);
       if (!neededPerson) {
         resetPerson();
@@ -102,25 +102,25 @@ export default defineComponent({
       emit("update:peopleConfig", persons.value);
 
       // Correct increment id for new person
-      person.value.id = persons.value.length;
+      person.value.id = String(persons.value.length);
 
       resetPerson();
     };
 
     const addPersonToConfig = (): void => {
-      const id = person.value.id + 1;
+      const id = String(person.value.id + 1);
       const name = person.value.name || `Person ${id}`;
       persons.value.push({ name, paid: person.value.paid, id, ows: 0, exceed: 0, loaners: [] });
 
       emit("update:peopleConfig", persons.value);
 
       // Correct increment id for new person
-      person.value.id = persons.value.length;
+      person.value.id = String(persons.value.length);
 
       resetPerson();
     };
 
-    const startEditingPerson = (pers: PersonConfig): void => {
+    const startEditingPerson = (pers: ISpPersonConfig): void => {
       mode.value = "edit";
       person.value.name = pers.name;
       person.value.paid = pers.paid;
@@ -134,13 +134,13 @@ export default defineComponent({
       mode.value = "new";
     };
 
-    const deletePerson = (pers: PersonConfig) => {
+    const deletePerson = (pers: ISpPersonConfig) => {
       persons.value = persons.value.filter((p) => p.id !== pers.id);
 
       emit("update:peopleConfig", persons.value);
 
       // Correct increment id for new person
-      person.value.id = persons.value.length + 1;
+      person.value.id = String(persons.value.length + 1);
 
       resetPerson();
     };

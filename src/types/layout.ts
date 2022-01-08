@@ -1,4 +1,4 @@
-export interface RouteAction {
+export interface IRouteAction {
   name: string;
   to: string;
 }

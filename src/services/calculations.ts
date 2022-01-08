@@ -1,6 +1,6 @@
-import { Person } from "../types/spPeopleConfig";
+import { ISpPersonConfig } from "../types/spPeopleConfig";
 
-export const calculateResults = (peopleConfig: Person[], price: number) => {
+export const calculateResults = (peopleConfig: ISpPersonConfig[], price: number) => {
   const totallPeopleCount: number = peopleConfig.length;
   const eachPays: number = Math.floor(price / totallPeopleCount);
 
@@ -8,7 +8,7 @@ export const calculateResults = (peopleConfig: Person[], price: number) => {
   splitExceeds(peopleConfig);
 };
 
-function defineOwsAndExceeds(peopleConfig: Person[], eachPays: number): void {
+function defineOwsAndExceeds(peopleConfig: ISpPersonConfig[], eachPays: number): void {
   for (const conf of peopleConfig) {
     const diff = conf.paid - eachPays;
 
@@ -22,7 +22,7 @@ function defineOwsAndExceeds(peopleConfig: Person[], eachPays: number): void {
   }
 }
 
-function splitExceeds(peopleConfig: Person[]): void {
+function splitExceeds(peopleConfig: ISpPersonConfig[]): void {
   for (const conf of peopleConfig) {
     if (!conf.exceed) continue;
     // Looking for some1 who has money to pay
