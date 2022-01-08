@@ -32,12 +32,12 @@ import { computed, defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 
 // Components
-import SpWrapper from "./SpWrapper.vue";
-import SpBreadCrumbs from "./SpBreadCrumbs.vue";
-import SpTotallPrice from "./SpTotallPrice.vue";
-import SpPeopleCount from "./SpPeopleCount.vue";
-import SpPeopleConfig from "./SpPeopleConfig.vue";
-import SpResultsPreview from "./SpResultsPreview.vue";
+import SpWrapper from "@/components/SpWrapper.vue";
+import SpBreadCrumbs from "@/components/SpBreadCrumbs.vue";
+import SpTotallPrice from "@/components/SpTotallPrice.vue";
+import SpPeopleCount from "@/components/SpPeopleCount.vue";
+import SpPeopleConfig from "@/components/SpPeopleConfig.vue";
+import SpResultsPreview from "@/components/SpResultsPreview.vue";
 
 // Types
 import { Item } from "../types/spBreadCrumbs";

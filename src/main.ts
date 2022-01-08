@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import { Quasar, Notify } from "quasar";
+import { router } from "@/router/router";
 
 // Import icon libraries
 import "@quasar/extras/material-icons/material-icons.css";
@@ -20,4 +21,5 @@ createApp(App)
       }
     }
   })
+  .use(router)
   .mount("#app");
