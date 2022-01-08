@@ -19,14 +19,15 @@
         </q-item>
         <q-item v-ripple>
           <q-item-section>
-            3. Caclulate price sharing for past events with <span class="text-weight-bold">'Simple calculation'</span>
+            <p>
+              3. Caclulate price sharing for past events with <span class="text-weight-bold">'Simple'</span> claculation
+            </p>
           </q-item-section>
         </q-item>
         <q-item v-ripple>
           <q-item-section>
-            4. Register with your friends and share expenses
-            <span class="text-weight-bold">online</span></q-item-section
-          >
+            <p>4. Register with your friends and share expenses <span class="text-weight-bold">online</span></p>
+          </q-item-section>
         </q-item>
       </q-list>
     </q-card-section>
