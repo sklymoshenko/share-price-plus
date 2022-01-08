@@ -15,7 +15,7 @@
         <q-tree :nodes="preview" node-key="label" default-expand-all text-color="white" />
       </div>
     </q-card>
-    <div class="buttons flex justify-between">
+    <div class="buttons flex justify-between" v-if="!hideButtons">
       <q-btn color="primary" label="Edit" @click="$emit('edit')" class="q-mt-md" />
       <q-btn color="secondary" label="New" @click="$emit('new')" class="q-mt-md" />
     </div>
@@ -26,22 +26,26 @@
 import { computed, defineComponent, PropType } from "vue";
 
 // Types
-import { Person } from "../types/spPeopleConfig";
+import { ISpPersonConfig } from "../types/spPeopleConfig";
 
 export default defineComponent({
   name: "SpResultsPreview",
   emits: ["edit", "new"],
   props: {
     peopleConfig: {
-      type: Array as PropType<Person[]>,
+      type: Array as PropType<ISpPersonConfig[]>,
       default: []
     },
     price: {
       type: Number,
       default: 0
+    },
+    hideButtons: {
+      type: Boolean,
+      default: true
     }
   },
-  setup({ peopleConfig, price }) {
+  setup({ peopleConfig }) {
     const preview = computed(() => {
       return peopleConfig.map((conf) => {
         const returnsArray = conf.loaners

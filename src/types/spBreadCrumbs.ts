@@ -1,6 +1,6 @@
 type ItemHref = "price" | "people" | "configuration";
 
-export interface Item {
+export interface IBreadcrumb {
   id: number;
   label?: string;
   disabled: boolean;

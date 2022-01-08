@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Item } from "../types/spBreadCrumbs";
+import { IBreadcrumb } from "../types/spBreadCrumbs";
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
@@ -28,7 +28,7 @@ export default defineComponent({
   props: {
     items: {
       required: true,
-      type: Array as PropType<Item[]>
+      type: Array as PropType<IBreadcrumb[]>
     }
   }
 });

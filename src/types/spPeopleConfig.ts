@@ -1,15 +1,15 @@
-export interface Loaner {
-  id: PersonConfig["id"];
-  paid: PersonConfig["paid"];
+export interface ISpLoaner {
+  id: ISpPersonConfig["id"];
+  paid: ISpPersonConfig["paid"];
 }
 
-export interface PersonConfig {
+export interface ISpPersonConfig {
   name: string;
   paid: number;
-  id: number;
+  id: string;
   ows: number;
   exceed: number;
-  loaners: Loaner[];
+  loaners: ISpLoaner[];
 }
 
 export type Modes = "edit" | "new";

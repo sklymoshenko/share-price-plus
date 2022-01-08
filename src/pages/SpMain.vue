@@ -20,7 +20,13 @@
         </div>
       </div>
       <div class="column" style="height: 100%" v-if="isResultCalculated">
-        <SpResultsPreview :peopleConfig="peopleConfig" :price="price" @edit="editShare" @new="newShare" />
+        <SpResultsPreview
+          :peopleConfig="peopleConfig"
+          :price="price"
+          @edit="editShare"
+          @new="newShare"
+          :hide-buttons="false"
+        />
       </div>
     </div>
   </div>
@@ -38,11 +44,11 @@ import SpPeopleConfig from "@/components/SpPeopleConfig.vue";
 import SpResultsPreview from "@/components/SpResultsPreview.vue";
 
 // Types
-import { Item } from "../types/spBreadCrumbs";
+import { IBreadcrumb } from "../types/spBreadCrumbs";
+import { ISpPersonConfig } from "../types/spPeopleConfig";
 
 // Services
 import { calculateResults } from "../services/calculations";
-import { PersonConfig } from "../types/spPeopleConfig";
 
 export default defineComponent({
   name: "SpMain",
@@ -52,7 +58,7 @@ export default defineComponent({
     const currentStep = ref<number>(0);
     const price = ref<number>(0);
     const people = ref<number>(3);
-    const peopleConfig = ref<PersonConfig[]>([]);
+    const peopleConfig = ref<ISpPersonConfig[]>([]);
     const isResultCalculated = ref<boolean>(false);
 
     const btnNextLabel = computed(() => {
@@ -63,7 +69,7 @@ export default defineComponent({
       return price.value <= 0 || (currentStep.value === 2 && peopleConfig.value.length !== people.value);
     });
 
-    const breadcrumbs = ref<Item[]>([
+    const breadcrumbs = ref<IBreadcrumb[]>([
       {
         label: "Totall Price",
         disabled: false,
@@ -92,7 +98,7 @@ export default defineComponent({
       }
     ]);
 
-    const moveTo = (item: Item | { id: number }): void => {
+    const moveTo = (item: IBreadcrumb | { id: number }): void => {
       if (price.value <= 0) {
         $q.notify({
           message: "Price is still empty!",
