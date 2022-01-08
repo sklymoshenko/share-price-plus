@@ -1,13 +1,13 @@
 <template>
   <ReloadPWA />
-  <SpMain />
+  <router-view></router-view>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 // Components
-import SpMain from "./components/SpMain.vue";
+import SpMain from "@/pages/SpMain.vue";
 import ReloadPWA from "./components/ReloadPWA.vue";
 
 export default defineComponent({
