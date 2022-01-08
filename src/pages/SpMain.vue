@@ -1,19 +1,18 @@
 <template>
-  <SpWrapper>
-    <template #header>
-      <h3>Share Price</h3>
-      <div class="pre-calculations-header" v-if="!isResultCalculated">
+  <div class="column" style="height: inherit">
+    <div class="col-1">
+      <div class="row breadcrumbs justify-center" style="height: 100%" v-if="!isResultCalculated">
         <SpBreadCrumbs :items="breadcrumbs" @breadcrumb:clicked="moveTo($event)" />
       </div>
-    </template>
-    <template #body>
+    </div>
+    <div class="col-11">
       <div class="column justify-between" style="height: 100%" v-if="!isResultCalculated">
-        <div class="col-9 steps-inners">
+        <div class="col-8 steps-inners">
           <SpTotallPrice v-if="currentStep === 0" v-model:price="price" />
           <SpPeopleCount v-if="currentStep === 1" v-model:people="people" />
           <SpPeopleConfig v-if="currentStep === 2" v-model:peopleConfig="peopleConfig" :people-count="people" />
         </div>
-        <div class="col-2 control-btns">
+        <div class="col-2 control-btns q-mb-lg">
           <div class="row justify-between">
             <q-btn color="primary" label="Back" @click="stepBackAction" :disable="currentStep === 0" />
             <q-btn color="secondary" :label="btnNextLabel" @click="stepAction" :disable="disableAction" />
@@ -23,8 +22,8 @@
       <div class="column" style="height: 100%" v-if="isResultCalculated">
         <SpResultsPreview :peopleConfig="peopleConfig" :price="price" @edit="editShare" @new="newShare" />
       </div>
-    </template>
-  </SpWrapper>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
