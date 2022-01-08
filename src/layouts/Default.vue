@@ -11,7 +11,7 @@
         <q-page-sticky position="bottom-right" :offset="[10, 10]">
           <q-fab icon="add" direction="up" color="secondary">
             <q-fab-action
-              v-for="(action, i) in routesActions || []"
+              v-for="(action, i) in actions"
               :key="i"
               color="primary"
               external-label
@@ -39,15 +39,16 @@ export default defineComponent({
   name: "Default",
   setup() {
     const title: string = "Share Price Plus+";
-    const routesActions: RouteAction[] | undefined = routes[0].children?.map((route) => ({
-      name: String(route.name),
-      to: route.path
-    }));
+    const actions: RouteAction[] | undefined =
+      routes[0].children?.map((route) => ({
+        name: String(route.name),
+        to: route.path
+      })) || [];
 
-    const icons: string[] = ["bar_chart", "person", "article"];
+    const icons: string[] = ["home", "bar_chart", "person", "article"];
 
     return {
-      routesActions,
+      actions,
       icons,
       title
     };
