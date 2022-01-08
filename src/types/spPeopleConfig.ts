@@ -1,9 +1,9 @@
 export interface Loaner {
-  id: Person["id"];
-  paid: Person["paid"];
+  id: PersonConfig["id"];
+  paid: PersonConfig["paid"];
 }
 
-export interface Person {
+export interface PersonConfig {
   name: string;
   paid: number;
   id: number;

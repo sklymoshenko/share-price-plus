@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { Person, Modes } from "../types/spPeopleConfig";
+import { PersonConfig, Modes } from "../types/spPeopleConfig";
 import { computed, defineComponent, PropType, ref } from "vue";
 import SpPersonItem from "./SpPersonItem.vue";
 
@@ -56,12 +56,12 @@ export default defineComponent({
       type: Number
     },
     peopleConfig: {
-      type: Array as PropType<Person[]>,
+      type: Array as PropType<PersonConfig[]>,
       default: []
     }
   },
   setup({ peopleCount, peopleConfig }, { emit }) {
-    const person = ref<Person>({
+    const person = ref<PersonConfig>({
       name: "",
       paid: 0,
       id: 0,
@@ -69,7 +69,7 @@ export default defineComponent({
       exceed: 0,
       loaners: []
     });
-    const persons = ref<Person[]>([...peopleConfig]);
+    const persons = ref<PersonConfig[]>([...peopleConfig]);
     const mode = ref<Modes>("new");
 
     const btnLabel = computed(() => {
@@ -120,7 +120,7 @@ export default defineComponent({
       resetPerson();
     };
 
-    const startEditingPerson = (pers: Person): void => {
+    const startEditingPerson = (pers: PersonConfig): void => {
       mode.value = "edit";
       person.value.name = pers.name;
       person.value.paid = pers.paid;
@@ -134,7 +134,7 @@ export default defineComponent({
       mode.value = "new";
     };
 
-    const deletePerson = (pers: Person) => {
+    const deletePerson = (pers: PersonConfig) => {
       persons.value = persons.value.filter((p) => p.id !== pers.id);
 
       emit("update:peopleConfig", persons.value);

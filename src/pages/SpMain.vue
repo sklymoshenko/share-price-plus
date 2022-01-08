@@ -31,7 +31,6 @@ import { computed, defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 
 // Components
-import SpWrapper from "@/components/SpWrapper.vue";
 import SpBreadCrumbs from "@/components/SpBreadCrumbs.vue";
 import SpTotallPrice from "@/components/SpTotallPrice.vue";
 import SpPeopleCount from "@/components/SpPeopleCount.vue";
@@ -43,17 +42,17 @@ import { Item } from "../types/spBreadCrumbs";
 
 // Services
 import { calculateResults } from "../services/calculations";
-import { Person } from "../types/spPeopleConfig";
+import { PersonConfig } from "../types/spPeopleConfig";
 
 export default defineComponent({
   name: "SpMain",
-  components: { SpWrapper, SpBreadCrumbs, SpTotallPrice, SpPeopleCount, SpPeopleConfig, SpResultsPreview },
+  components: { SpBreadCrumbs, SpTotallPrice, SpPeopleCount, SpPeopleConfig, SpResultsPreview },
   setup() {
     const $q = useQuasar();
     const currentStep = ref<number>(0);
     const price = ref<number>(0);
     const people = ref<number>(3);
-    const peopleConfig = ref<Person[]>([]);
+    const peopleConfig = ref<PersonConfig[]>([]);
     const isResultCalculated = ref<boolean>(false);
 
     const btnNextLabel = computed(() => {
