@@ -9,7 +9,7 @@
           <router-view></router-view>
         </div>
         <q-page-sticky position="bottom-right" :offset="[10, 10]">
-          <q-fab icon="add" direction="up" color="secondary">
+          <q-fab icon="keyboard_arrow_up" direction="up" color="secondary">
             <q-fab-action
               v-for="(action, i) in actions"
               :key="i"

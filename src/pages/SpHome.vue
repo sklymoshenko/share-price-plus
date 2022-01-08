@@ -39,7 +39,7 @@
       <q-list>
         <q-item v-ripple>
           <q-item-section>
-            Use a big green + button at the bottom-right corner to navigate and choose what do you want to do
+            Use a big green button at the bottom-right corner to navigate and choose what do you want to do
           </q-item-section>
         </q-item>
       </q-list>
