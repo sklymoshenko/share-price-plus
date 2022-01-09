@@ -1,4 +1,5 @@
 import { ISpEvent } from "./types/entities/event";
+import { ISpUser } from "./types/entities/user";
 
 export const events: ISpEvent[] = [
   {
@@ -32,4 +33,12 @@ export const events: ISpEvent[] = [
     ],
     _createdAt: "30.12.2021"
   }
+];
+
+export const usersMock: ISpUser[] = [
+  { id: "userId1", name: "Chuck", email: "chuck.horny@seznam.cz" },
+  { id: "userId2", name: "User1", email: "user1.horny@seznam.cz" },
+  { id: "userId3", name: "User2", email: "user2.horny@seznam.cz" },
+  { id: "userId4", name: "User3", email: "user3.horny@seznam.cz" },
+  { id: "userId5", name: "User4", email: "user4.horny@seznam.cz" }
 ];

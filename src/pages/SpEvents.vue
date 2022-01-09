@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="text-h6 text-left">Events</div>
+    <div class="events-bar row justify-between">
+      <div class="text-h6 text-left">Events</div>
+      <q-btn round color="primary" icon="add" :to="{ name: 'Event', params: { id: 'new' } }" />
+    </div>
     <div style="width: 100%" class="q-mt-md">
       <q-list separator>
         <SpEventItem v-for="event in events" :key="event.id" :sp-event="event" :current-user="currentUser" />
@@ -19,7 +22,7 @@ import SpEventItem from "@/components/SpEventItem.vue";
 import { ISpUser } from "@/types/entities/user";
 
 // Mocks
-import { events } from "@/events-mock";
+import { events } from "@/mock";
 
 export default defineComponent({
   name: "SpEvents",
