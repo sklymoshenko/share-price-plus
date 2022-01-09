@@ -11,7 +11,7 @@
     />
     <q-input
       v-model.number="person.paid"
-      type="number"
+      type="tel"
       filled
       dense
       clearable
@@ -29,7 +29,7 @@
       @click="confirmModeAction"
       :disable="disableInputs"
     />
-    <div class="persons q-mt-lg row justify-right overflow-auto" style="max-height: 220px">
+    <div class="persons q-mt-lg row justify-right" style="max-height: 220px">
       <SpPersonItem
         v-for="conf of peopleConfig"
         :key="conf.id"

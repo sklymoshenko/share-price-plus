@@ -1,25 +1,25 @@
 <template>
   <div class="column" style="height: inherit">
-    <div class="col-1">
+    <div class="col-2">
       <div class="row breadcrumbs justify-center" style="height: 100%" v-if="!isResultCalculated">
         <SpBreadCrumbs :items="breadcrumbs" @breadcrumb:clicked="moveTo($event)" />
       </div>
     </div>
-    <div class="col-11">
+    <div class="col-10">
       <div class="column justify-between" style="height: 100%" v-if="!isResultCalculated">
-        <div class="col-8 steps-inners">
+        <div class="col-8 steps-inners scroll-y">
           <SpTotallPrice v-if="currentStep === 0" v-model:price="price" />
           <SpPeopleCount v-if="currentStep === 1" v-model:people="people" />
           <SpPeopleConfig v-if="currentStep === 2" v-model:peopleConfig="peopleConfig" :people-count="people" />
         </div>
-        <div class="col-2 control-btns q-mb-lg">
+        <div class="col-3 control-btns">
           <div class="row justify-between">
             <q-btn color="primary" label="Back" @click="stepBackAction" :disable="currentStep === 0" />
             <q-btn color="secondary" :label="btnNextLabel" @click="stepAction" :disable="disableAction" />
           </div>
         </div>
       </div>
-      <div class="column" style="height: 100%" v-if="isResultCalculated">
+      <div class="column scroll-y" style="height: 100%" v-if="isResultCalculated">
         <SpResultsPreview
           :peopleConfig="peopleConfig"
           :price="price"

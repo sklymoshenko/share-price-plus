@@ -8,8 +8,14 @@
         <div class="default-layout-view">
           <router-view></router-view>
         </div>
-        <q-page-sticky position="bottom-right" :offset="[10, 10]">
-          <q-fab icon="keyboard_arrow_up" direction="up" color="secondary">
+        <q-page-sticky position="bottom-right" :offset="fabPos">
+          <q-fab
+            icon="keyboard_arrow_up"
+            direction="up"
+            color="secondary"
+            v-touch-pan.prevent.mouse="moveFab"
+            :disable="draggingFab"
+          >
             <q-fab-action
               v-for="(action, i) in actions"
               :key="i"
@@ -28,8 +34,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
+// Router
 import { routes } from "../router/routes";
 
 // Types
@@ -38,6 +45,14 @@ import { IRouteAction } from "../types/layout";
 export default defineComponent({
   name: "Default",
   setup() {
+    const fabPos = ref([18, 18]);
+    const draggingFab = ref<boolean>(false);
+    const moveFab = (ev: any) => {
+      draggingFab.value = ev.isFirst !== true && ev.isFinal !== true;
+
+      fabPos.value = [fabPos.value[0] - ev.delta.x, fabPos.value[1] - ev.delta.y];
+    };
+
     const title: string = "Share Price Plus+";
     const actions: IRouteAction[] | undefined =
       routes[0].children
@@ -52,7 +67,10 @@ export default defineComponent({
     return {
       actions,
       icons,
-      title
+      title,
+      draggingFab,
+      moveFab,
+      fabPos
     };
   }
 });
@@ -63,5 +81,6 @@ export default defineComponent({
   height: 78vh;
   width: 80%;
   margin: 0 auto;
+  touch-action: manipulation;
 }
 </style>
