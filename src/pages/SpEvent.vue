@@ -1,5 +1,6 @@
 <template>
-  <SpResultsPreview :price="spEvent.price" :peopleConfig="spEvent.participants" hide-buttons />
+  <SpResultsPreview v-if="spEvent" :price="spEvent.price" :peopleConfig="spEvent.participants" hide-buttons />
+  <SpEventNew v-else />
 </template>
 
 <script lang="ts">
@@ -10,26 +11,30 @@ import { useRoute } from "vue-router";
 import { ISpEvent } from "@/types/entities/event";
 
 // Mocks
-import { events } from "@/events-mock";
+import { events } from "@/mock";
 
 // Components
 import SpResultsPreview from "@/components/SpResultsPreview.vue";
 import { calculateResults } from "@/services/calculations";
+import SpEventNew from "@/components/SpEventNew.vue";
 
 export default defineComponent({
   name: "SpEvent",
-  components: { SpResultsPreview },
+  components: { SpResultsPreview, SpEventNew },
   setup() {
     const route = useRoute();
 
     const spEventId: ISpEvent["id"] = route.params.id as ISpEvent["id"];
 
-    const spEvent = computed((): ISpEvent => {
+    const spEvent = computed((): ISpEvent | null => {
+      if (spEventId === "new") return null;
       return events.find((e) => e.id === spEventId) || events[0];
     });
 
     // Calculate on mount
-    calculateResults(spEvent.value.participants, spEvent.value.price);
+    if (spEvent.value) {
+      calculateResults(spEvent.value.participants, spEvent.value.price);
+    }
 
     return { spEvent };
   }
