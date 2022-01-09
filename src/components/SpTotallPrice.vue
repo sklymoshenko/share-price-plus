@@ -3,7 +3,7 @@
     <div class="col-12">
       <q-input
         v-model.number="totallPrice"
-        type="number"
+        type="tel"
         filled
         clearable
         @update:model-value="updatePrice"
