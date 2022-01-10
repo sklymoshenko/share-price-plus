@@ -4,7 +4,7 @@ export interface ISpLoaner {
 }
 
 export interface ISpPersonConfig {
-  id: string;
+  id?: string;
   name: string;
   paid: number;
   ows: number;

@@ -8,7 +8,7 @@
         <div class="default-layout-view">
           <router-view></router-view>
         </div>
-        <q-page-sticky position="bottom-right" :offset="fabPos">
+        <q-page-sticky position="bottom-right" :offset="fabPos" v-if="routeOmit">
           <q-fab
             icon="keyboard_arrow_up"
             direction="up"
@@ -34,7 +34,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
+import { useRoute } from "vue-router";
 
 // Router
 import { routes } from "../router/routes";
@@ -45,24 +46,29 @@ import { IRouteAction } from "../types/layout";
 export default defineComponent({
   name: "Default",
   setup() {
+    const route = useRoute();
     const fabPos = ref([18, 18]);
     const draggingFab = ref<boolean>(false);
+    const title: string = "Share Price Plus+";
+    const icons: string[] = ["home", "bar_chart", "person", "article"];
+    const routeOmit = computed(() => {
+      const routeName = route.name || "";
+      return !["SignIn", "SignUp"].includes(String(routeName));
+    });
+
     const moveFab = (ev: any) => {
       draggingFab.value = ev.isFirst !== true && ev.isFinal !== true;
 
       fabPos.value = [fabPos.value[0] - ev.delta.x, fabPos.value[1] - ev.delta.y];
     };
 
-    const title: string = "Share Price Plus+";
     const actions: IRouteAction[] | undefined =
       routes[0].children
         ?.map((route) => ({
           name: String(route.name),
           to: `/${route.path}`
         }))
-        ?.filter((r) => !["Event"].includes(r.name)) || [];
-
-    const icons: string[] = ["home", "bar_chart", "person", "article"];
+        ?.filter((r) => !["Event", "SignIn", "SignUp"].includes(r.name)) || [];
 
     return {
       actions,
@@ -70,7 +76,8 @@ export default defineComponent({
       title,
       draggingFab,
       moveFab,
-      fabPos
+      fabPos,
+      routeOmit
     };
   }
 });

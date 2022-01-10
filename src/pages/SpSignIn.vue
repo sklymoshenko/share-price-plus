@@ -1,15 +1,7 @@
 <template>
   <div class="q-pa-md" style="height: 100%">
-    <q-form
-      @submit="onSubmit"
-      class="q-gutter-md column justify-between"
-      style="height: 100%"
-      autocorrect="off"
-      autocapitalize="off"
-      autocomplete="off"
-      spellcheck="false"
-    >
-      <div class="input-wrapper col-8">
+    <q-form @submit="onSubmit" class="q-gutter-md column justify-around" style="height: 100%">
+      <div class="input-wrapper col-5">
         <div class="column justify-around" style="height: 100%">
           <q-input
             filled
@@ -31,27 +23,11 @@
               (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid email type'
             ]"
           />
-
-          <q-input
-            filled
-            v-model="user.password"
-            hint="Password*"
-            :type="isPwd ? 'password' : 'text'"
-            lazy-rules
-            clearable
-            :rules="[(val) => (val !== null && val !== '') || 'Please write your password']"
-          >
-            <template v-slot:append>
-              <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
-            </template>
-          </q-input>
         </div>
       </div>
-      <div class="col-2">
-        <div class="row justify-between">
-          <q-btn label="Submit" type="submit" color="secondary" />
-          <q-btn label="Back" color="primary" @click="router.back()" />
-        </div>
+      <div class="row justify-between col-1">
+        <q-btn label="Submit" type="submit" color="secondary" />
+        <q-btn label="Sign Up" color="primary" to="/signup" />
       </div>
     </q-form>
   </div>
@@ -71,13 +47,12 @@ export default defineComponent({
       email: "",
       password: ""
     });
-    const isPwd = ref<boolean>(true);
 
     const onSubmit = () => {
       router.push("/");
     };
 
-    return { user, onSubmit, isPwd, router };
+    return { user, onSubmit };
   }
 });
 </script>

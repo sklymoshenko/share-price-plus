@@ -1,7 +1,7 @@
 import { ISpPersonConfig } from "../spPeopleConfig";
 
 export interface ISpEvent {
-  id: string;
+  id?: string;
   name: string;
   price: number;
   each: number;
