@@ -9,6 +9,8 @@ import SpUser from "@/pages/SpUser.vue";
 import SpEvents from "@/pages/SpEvents.vue";
 import SpEvent from "@/pages/SpEvent.vue";
 import SpHome from "@/pages/SpHome.vue";
+import SpSignIn from "@/pages/SpSignIn.vue";
+import SpSignUp from "@/pages/SpSignUp.vue";
 
 export const routes: RouterOptions["routes"] = [
   {
@@ -20,6 +22,16 @@ export const routes: RouterOptions["routes"] = [
         path: "home",
         name: "Home",
         component: SpHome
+      },
+      {
+        path: "signin",
+        name: "SignIn",
+        component: SpSignIn
+      },
+      {
+        path: "signup",
+        name: "SignUp",
+        component: SpSignUp
       },
       {
         path: "simple-calculations",
