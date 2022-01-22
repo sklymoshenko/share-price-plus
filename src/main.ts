@@ -2,6 +2,13 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import { Quasar, Notify } from "quasar";
 import { router } from "@/router/router";
+import { createApolloProvider } from "@vue/apollo-option";
+import { apolloClient } from "./services/apollo";
+
+// Set up Apollo
+const apolloProvider = createApolloProvider({
+  defaultClient: apolloClient
+});
 
 // Import icon libraries
 import "@quasar/extras/material-icons/material-icons.css";
@@ -21,5 +28,6 @@ createApp(App)
       }
     }
   })
+  .use(apolloProvider)
   .use(router)
   .mount("#app");
