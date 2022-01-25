@@ -5,7 +5,7 @@
         <q-breadcrumbs active-color="secondary" align="center" gutter="sm" separator="|">
           <q-breadcrumbs-el
             v-for="item in items"
-            :key="item.id"
+            :key="item._id"
             :icon="item.icon"
             :label="item.label"
             :disable="item.disabled"

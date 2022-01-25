@@ -1,10 +1,10 @@
 export interface ISpLoaner {
-  id: ISpPersonConfig["id"];
-  paid: ISpPersonConfig["paid"];
+  _id: ISpParticipant["_id"];
+  paid: ISpParticipant["paid"];
 }
 
-export interface ISpPersonConfig {
-  id?: string;
+export interface ISpParticipant {
+  _id: string;
   name: string;
   paid: number;
   ows: number;

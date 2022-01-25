@@ -33,7 +33,7 @@ export default defineComponent({
   name: "SpUser",
   setup() {
     const person: ISpUser = {
-      id: "123",
+      _id: "123",
       name: "Chuck",
       email: "chuck.horny@seznam.com",
       eventsCount: 10,

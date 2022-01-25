@@ -31,8 +31,8 @@
     />
     <div class="persons q-mt-lg row justify-right" style="max-height: 220px">
       <SpPersonItem
-        v-for="conf of peopleConfig"
-        :key="conf.id"
+        v-for="conf of participants"
+        :key="conf._id"
         :name="conf.name"
         :paid="conf.paid"
         @click="startEditingPerson(conf)"
@@ -43,33 +43,33 @@
 </template>
 
 <script lang="ts">
-import { ISpPersonConfig, Modes } from "../types/spPeopleConfig";
+import { ISpParticipant, Modes } from "../types/spPeopleConfig";
 import { computed, defineComponent, PropType, ref } from "vue";
 import SpPersonItem from "./SpPersonItem.vue";
 
 export default defineComponent({
   name: "SpPeopleConfig",
   components: { SpPersonItem },
-  emits: ["update:peopleConfig"],
+  emits: ["update:participants"],
   props: {
     peopleCount: {
       type: Number
     },
-    peopleConfig: {
-      type: Array as PropType<ISpPersonConfig[]>,
+    participants: {
+      type: Array as PropType<ISpParticipant[]>,
       default: []
     }
   },
-  setup({ peopleCount, peopleConfig }, { emit }) {
-    const person = ref<ISpPersonConfig>({
+  setup({ peopleCount, participants }, { emit }) {
+    const person = ref<ISpParticipant>({
       name: "",
       paid: 0,
-      id: "",
+      _id: "",
       ows: 0,
       exceed: 0,
       loaners: []
     });
-    const persons = ref<ISpPersonConfig[]>([...peopleConfig]);
+    const persons = ref<ISpParticipant[]>([...participants]);
     const mode = ref<Modes>("new");
 
     const btnLabel = computed((): string => {
@@ -90,7 +90,7 @@ export default defineComponent({
     };
 
     const editPersonsConfig = (): void => {
-      const neededPerson = persons.value.find((p) => p.id === person.value.id);
+      const neededPerson = persons.value.find((p) => p._id === person.value._id);
       if (!neededPerson) {
         resetPerson();
         return;
@@ -99,32 +99,32 @@ export default defineComponent({
       neededPerson.name = person.value.name;
       neededPerson.paid = person.value.paid;
 
-      emit("update:peopleConfig", persons.value);
+      emit("update:participants", persons.value);
 
-      // Correct increment id for new person
-      person.value.id = String(persons.value.length);
+      // Correct increment _id for new person
+      person.value._id = String(persons.value.length);
 
       resetPerson();
     };
 
     const addPersonToConfig = (): void => {
-      const id = String(person.value.id + 1);
-      const name = person.value.name || `Person ${id}`;
-      persons.value.push({ name, paid: person.value.paid, id, ows: 0, exceed: 0, loaners: [] });
+      const _id = String(+person.value._id + 1);
+      const name = person.value.name || `Person ${_id}`;
+      persons.value.push({ name, paid: person.value.paid, _id, ows: 0, exceed: 0, loaners: [] });
 
-      emit("update:peopleConfig", persons.value);
+      emit("update:participants", persons.value);
 
-      // Correct increment id for new person
-      person.value.id = String(persons.value.length);
+      // Correct increment _id for new person
+      person.value._id = String(persons.value.length);
 
       resetPerson();
     };
 
-    const startEditingPerson = (pers: ISpPersonConfig): void => {
+    const startEditingPerson = (pers: ISpParticipant): void => {
       mode.value = "edit";
       person.value.name = pers.name;
       person.value.paid = pers.paid;
-      person.value.id = pers.id;
+      person.value._id = pers._id;
     };
 
     const resetPerson = () => {
@@ -134,13 +134,13 @@ export default defineComponent({
       mode.value = "new";
     };
 
-    const deletePerson = (pers: ISpPersonConfig) => {
-      persons.value = persons.value.filter((p) => p.id !== pers.id);
+    const deletePerson = (pers: ISpParticipant) => {
+      persons.value = persons.value.filter((p) => p._id !== pers._id);
 
-      emit("update:peopleConfig", persons.value);
+      emit("update:participants", persons.value);
 
-      // Correct increment id for new person
-      person.value.id = String(persons.value.length + 1);
+      // Correct increment _id for new person
+      person.value._id = String(persons.value.length + 1);
 
       resetPerson();
     };

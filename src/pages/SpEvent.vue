@@ -24,11 +24,11 @@ export default defineComponent({
   setup() {
     const route = useRoute();
 
-    const spEventId: ISpEvent["id"] = route.params.id as ISpEvent["id"];
+    const spEventId: ISpEvent["_id"] = route.params._id as ISpEvent["_id"];
 
     const spEvent = computed((): ISpEvent | null => {
       if (spEventId === "new") return null;
-      return events.find((e) => e.id === spEventId) || events[0];
+      return events.find((e) => e._id === spEventId) || events[0];
     });
 
     // Calculate on mount
