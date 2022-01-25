@@ -49,8 +49,8 @@
       </div>
       <div class="col-2">
         <div class="row justify-between">
-          <q-btn label="Submit" type="submit" :loading="loading" color="secondary" />
           <q-btn label="Back" color="primary" @click="router.back()" />
+          <q-btn label="Submit" type="submit" :loading="loading" color="secondary" />
         </div>
       </div>
     </q-form>
@@ -65,6 +65,7 @@ import { useMutation } from "@vue/apollo-composable";
 
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 const SIGN_UP_MUTATION = gql`
   mutation register($password: String!, $email: String!, $name: String!) {
@@ -72,6 +73,7 @@ const SIGN_UP_MUTATION = gql`
       _id
       name
       events
+      email
     }
   }
 `;
@@ -79,6 +81,7 @@ const SIGN_UP_MUTATION = gql`
 export default defineComponent({
   name: "SpSignIn",
   setup() {
+    const $q = useQuasar();
     const router = useRouter();
     const user = ref<Omit<ISpUser, "_id">>({
       name: "",
@@ -87,11 +90,18 @@ export default defineComponent({
     });
 
     const isPwd = ref<boolean>(true);
-    const { mutate: register, loading } = useMutation(SIGN_UP_MUTATION, { variables: user.value });
+    const { mutate: signUp, loading } = useMutation(SIGN_UP_MUTATION, { variables: user.value });
 
     const onSubmit = async () => {
-      await register();
-      router.push("/");
+      try {
+        const { register } = (await signUp()) as { register: ISpUser };
+        router.push("/");
+      } catch (err: any) {
+        $q.notify({
+          message: err.message,
+          type: "negative"
+        });
+      }
     };
 
     return { user, onSubmit, isPwd, router, loading };
