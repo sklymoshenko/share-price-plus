@@ -65,6 +65,8 @@ import { useMutation } from "@vue/apollo-composable";
 
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
+import { IError } from "@/types/error";
+import { useQuasar } from "quasar";
 
 const SIGN_UP_MUTATION = gql`
   mutation register($password: String!, $email: String!, $name: String!) {
@@ -72,6 +74,7 @@ const SIGN_UP_MUTATION = gql`
       _id
       name
       events
+      email
     }
   }
 `;
@@ -79,6 +82,7 @@ const SIGN_UP_MUTATION = gql`
 export default defineComponent({
   name: "SpSignIn",
   setup() {
+    const $q = useQuasar();
     const router = useRouter();
     const user = ref<Omit<ISpUser, "_id">>({
       name: "",
@@ -87,10 +91,22 @@ export default defineComponent({
     });
 
     const isPwd = ref<boolean>(true);
-    const { mutate: register, loading } = useMutation(SIGN_UP_MUTATION, { variables: user.value });
+    const { mutate: signUp, loading } = useMutation(SIGN_UP_MUTATION, { variables: user.value });
 
     const onSubmit = async () => {
-      await register();
+      const { data, errors } = (await signUp()) as { data: { register: ISpUser }; errors?: IError[] };
+
+      if (errors?.length) {
+        for (const error of errors) {
+          $q.notify({
+            message: error.message,
+            type: "negative"
+          });
+        }
+
+        return;
+      }
+
       router.push("/");
     };
 
