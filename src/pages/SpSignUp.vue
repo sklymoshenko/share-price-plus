@@ -94,20 +94,15 @@ export default defineComponent({
     const { mutate: signUp, loading } = useMutation(SIGN_UP_MUTATION, { variables: user.value });
 
     const onSubmit = async () => {
-      const { data, errors } = (await signUp()) as { data: { register: ISpUser }; errors?: IError[] };
-
-      if (errors?.length) {
-        for (const error of errors) {
-          $q.notify({
-            message: error.message,
-            type: "negative"
-          });
-        }
-
-        return;
+      try {
+        const { register } = (await signUp()) as { register: ISpUser };
+        router.push("/");
+      } catch (err: any) {
+        $q.notify({
+          message: err.message,
+          type: "negative"
+        });
       }
-
-      router.push("/");
     };
 
     return { user, onSubmit, isPwd, router, loading };
