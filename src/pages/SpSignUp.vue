@@ -49,7 +49,7 @@
       </div>
       <div class="col-2">
         <div class="row justify-between">
-          <q-btn label="Submit" type="submit" color="secondary" />
+          <q-btn label="Submit" type="submit" :loading="loading" color="secondary" />
           <q-btn label="Back" color="primary" @click="router.back()" />
         </div>
       </div>
@@ -59,25 +59,42 @@
 
 <script lang="ts">
 import { ISpUser } from "@/types/entities/user";
+import gql from "graphql-tag";
+
+import { useMutation } from "@vue/apollo-composable";
+
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
+
+const SIGN_UP_MUTATION = gql`
+  mutation register($password: String!, $email: String!, $name: String!) {
+    register(password: $password, email: $email, name: $name) {
+      _id
+      name
+      events
+    }
+  }
+`;
 
 export default defineComponent({
   name: "SpSignIn",
   setup() {
     const router = useRouter();
-    const user = ref<ISpUser>({
+    const user = ref<Omit<ISpUser, "_id">>({
       name: "",
       email: "",
       password: ""
     });
-    const isPwd = ref<boolean>(true);
 
-    const onSubmit = () => {
+    const isPwd = ref<boolean>(true);
+    const { mutate: register, loading } = useMutation(SIGN_UP_MUTATION, { variables: user.value });
+
+    const onSubmit = async () => {
+      await register();
       router.push("/");
     };
 
-    return { user, onSubmit, isPwd, router };
+    return { user, onSubmit, isPwd, router, loading };
   }
 });
 </script>
