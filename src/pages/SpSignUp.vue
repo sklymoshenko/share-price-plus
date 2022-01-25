@@ -65,7 +65,6 @@ import { useMutation } from "@vue/apollo-composable";
 
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import { IError } from "@/types/error";
 import { useQuasar } from "quasar";
 
 const SIGN_UP_MUTATION = gql`
