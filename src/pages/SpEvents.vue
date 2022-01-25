@@ -8,7 +8,7 @@
     </div>
     <div style="width: 100%" class="q-mt-md">
       <q-list separator>
-        <SpEventItem v-for="event in events" :key="event.id" :sp-event="event" :current-user="currentUser" />
+        <SpEventItem v-for="event in events" :key="event._id" :sp-event="event" :current-user="currentUser" />
       </q-list>
     </div>
   </div>
@@ -30,7 +30,7 @@ export default defineComponent({
   name: "SpEvents",
   setup() {
     const currentUser = computed((): ISpUser => {
-      return { id: "userId1", name: "Chuck", email: "chuck.horny@seznam.cz" };
+      return { _id: "userId1", name: "Chuck", email: "chuck.horny@seznam.cz" };
     });
 
     return { events, currentUser };

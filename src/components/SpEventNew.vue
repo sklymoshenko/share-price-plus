@@ -14,7 +14,7 @@
     <div class="persons q-mt-lg row justify-right overflow-auto" style="max-height: 220px">
       <SpPersonItem
         v-for="participant of spEvent.participants"
-        :key="participant.id"
+        :key="participant._id"
         :name="participant.name"
         :paid="participant.paid"
         @delete="deleteParticipant(participant)"
@@ -41,7 +41,7 @@ import { useRouter } from "vue-router";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
-import { ISpPersonConfig } from "@/types/spPeopleConfig";
+import { ISpParticipant } from "@/types/spPeopleConfig";
 import SpPersonItem from "./SpPersonItem.vue";
 
 // Mock
@@ -56,7 +56,7 @@ export default defineComponent({
 
     const spEvent = ref<ISpEvent>({
       name: "",
-      id: "newEventId",
+      _id: "newEventId",
       each: 0,
       isClosed: false,
       participants: [],
@@ -66,7 +66,7 @@ export default defineComponent({
 
     const getUsers = (): ISpEvent["participants"] => {
       return usersMock.map((u) => ({
-        id: u.id,
+        _id: u._id,
         name: u.name,
         paid: 0,
         ows: 0,
@@ -78,8 +78,8 @@ export default defineComponent({
     // Load on created
     const participants: ISpEvent["participants"] = getUsers();
 
-    const deleteParticipant = (participant: ISpPersonConfig) => {
-      spEvent.value.participants = spEvent.value.participants.filter((p) => p.id !== participant.id);
+    const deleteParticipant = (participant: ISpParticipant) => {
+      spEvent.value.participants = spEvent.value.participants.filter((p) => p._id !== participant._id);
     };
 
     const createEvent = (): void => {

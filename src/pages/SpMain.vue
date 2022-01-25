@@ -10,7 +10,7 @@
         <div class="col-8 steps-inners scroll-y">
           <SpTotallPrice v-if="currentStep === 0" v-model:price="price" />
           <SpPeopleCount v-if="currentStep === 1" v-model:people="people" />
-          <SpPeopleConfig v-if="currentStep === 2" v-model:peopleConfig="peopleConfig" :people-count="people" />
+          <SpPeopleConfig v-if="currentStep === 2" v-model:participants="participants" :people-count="people" />
         </div>
         <div class="col-3 control-btns">
           <div class="row justify-between">
@@ -21,7 +21,7 @@
       </div>
       <div class="column scroll-y" style="height: 100%" v-if="isResultCalculated">
         <SpResultsPreview
-          :peopleConfig="peopleConfig"
+          :participants="participants"
           :price="price"
           @edit="editShare"
           @new="newShare"
@@ -45,7 +45,7 @@ import SpResultsPreview from "@/components/SpResultsPreview.vue";
 
 // Types
 import { IBreadcrumb } from "../types/spBreadCrumbs";
-import { ISpPersonConfig } from "../types/spPeopleConfig";
+import { ISpParticipant } from "../types/spPeopleConfig";
 
 // Services
 import { calculateResults } from "../services/calculations";
@@ -58,7 +58,7 @@ export default defineComponent({
     const currentStep = ref<number>(0);
     const price = ref<number>(0);
     const people = ref<number>(3);
-    const peopleConfig = ref<ISpPersonConfig[]>([]);
+    const participants = ref<ISpParticipant[]>([]);
     const isResultCalculated = ref<boolean>(false);
 
     const btnNextLabel = computed(() => {
@@ -66,7 +66,7 @@ export default defineComponent({
     });
 
     const disableAction = computed(() => {
-      return price.value <= 0 || (currentStep.value === 2 && peopleConfig.value.length !== people.value);
+      return price.value <= 0 || (currentStep.value === 2 && participants.value.length !== people.value);
     });
 
     const breadcrumbs = ref<IBreadcrumb[]>([
@@ -120,7 +120,7 @@ export default defineComponent({
     };
 
     const paidPriceValidate = () => {
-      const allPaied = peopleConfig.value.reduce((prev, curr) => prev + curr.paid, 0);
+      const allPaied = participants.value.reduce((prev, curr) => prev + curr.paid, 0);
       if (allPaied !== price.value) {
         const diff = Math.abs(allPaied - price.value);
         let message = `Totall paid is short for ${diff}. Someone is cheating`;
@@ -148,7 +148,7 @@ export default defineComponent({
       const validPrices = paidPriceValidate();
       if (!validPrices) return;
 
-      calculateResults(peopleConfig.value, price.value);
+      calculateResults(participants.value, price.value);
       isResultCalculated.value = true;
     };
 
@@ -159,14 +159,14 @@ export default defineComponent({
 
     const newShare = (): void => {
       isResultCalculated.value = false;
-      peopleConfig.value = [];
+      participants.value = [];
       price.value = 0;
       currentStep.value = 0;
       people.value = 3;
     };
 
     const editShare = (): void => {
-      peopleConfig.value = peopleConfig.value.map((conf) => ({ ...conf, loaners: [] }));
+      participants.value = participants.value.map((conf) => ({ ...conf, loaners: [] }));
       isResultCalculated.value = false;
     };
 
@@ -179,7 +179,7 @@ export default defineComponent({
       btnNextLabel,
       stepAction,
       stepBackAction,
-      peopleConfig,
+      participants,
       isResultCalculated,
       disableAction,
       newShare,

@@ -5,7 +5,7 @@
         <div class="text-h6">Preview</div>
         <div class="info flex justify-around">
           <div class="text-subtitle2">Totall: {{ price }}</div>
-          <div class="text-subtitle2">Each: {{ Math.floor(price / peopleConfig.length) }}</div>
+          <div class="text-subtitle2">Each: {{ Math.floor(price / participants.length) }}</div>
         </div>
       </q-card-section>
 
@@ -26,14 +26,14 @@
 import { computed, defineComponent, PropType } from "vue";
 
 // Types
-import { ISpPersonConfig } from "../types/spPeopleConfig";
+import { ISpParticipant } from "../types/spPeopleConfig";
 
 export default defineComponent({
   name: "SpResultsPreview",
   emits: ["edit", "new"],
   props: {
-    peopleConfig: {
-      type: Array as PropType<ISpPersonConfig[]>,
+    participants: {
+      type: Array as PropType<ISpParticipant[]>,
       default: []
     },
     price: {
@@ -45,12 +45,12 @@ export default defineComponent({
       default: true
     }
   },
-  setup({ peopleConfig }) {
+  setup({ participants }) {
     const preview = computed(() => {
-      return peopleConfig.map((conf) => {
+      return participants.map((conf) => {
         const returnsArray = conf.loaners
           .map((loaner) => {
-            const name = peopleConfig.find((pc) => pc.id === loaner.id)?.name;
+            const name = participants.find((pc) => pc._id === loaner._id)?.name;
             if (!name) return;
 
             return { label: `Returns to ${name}: ${loaner.paid}` };

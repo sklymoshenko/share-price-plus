@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable class="q-pa-lg" :to="{ name: 'Event', params: { id: spEvent.id } }">
+  <q-item clickable class="q-pa-lg" :to="{ name: 'Event', params: { id: spEvent._id } }">
     <q-item-section class="text-left">
       <q-item-label class="text-subtitle1 ellipsis">{{ spEvent.name }}</q-item-label>
       <q-item-label caption> Totall: {{ spEvent.price }}. Each: {{ spEvent.each }}.</q-item-label>
@@ -34,7 +34,7 @@ export default defineComponent({
   },
   setup({ spEvent, currentUser }) {
     const selfPaied = computed(() => {
-      return spEvent.participants.find((p) => p.id === currentUser.id)?.paid || 0;
+      return spEvent.participants.find((p) => p._id === currentUser._id)?.paid || 0;
     });
     return { selfPaied };
   }

@@ -1,12 +1,12 @@
-import { ISpPersonConfig } from "../spPeopleConfig";
+import { ISpParticipant } from "../spPeopleConfig";
 
 export interface ISpEvent {
-  id?: string;
+  _id: string;
   name: string;
   price: number;
   each: number;
   peopleCount: number;
-  participants: ISpPersonConfig[];
+  participants: ISpParticipant[];
   isClosed: boolean;
   _createdAt?: string;
   _closedAt?: string;
