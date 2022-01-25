@@ -2,7 +2,11 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client/core";
 
 const httpLink = new HttpLink({
   // You should use an absolute URL here
-  uri: "http://localhost:4000/graphql"
+
+  // For development
+  // uri: "http://localhost:4000/graphql"
+
+  uri: "https://share-price-plus-server.herokuapp.com/graphql"
 });
 
 // Create the subscription websocket link
