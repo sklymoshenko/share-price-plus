@@ -49,8 +49,8 @@
       </div>
       <div class="col-2">
         <div class="row justify-between">
-          <q-btn label="Submit" type="submit" :loading="loading" color="secondary" />
           <q-btn label="Back" color="primary" @click="router.back()" />
+          <q-btn label="Submit" type="submit" :loading="loading" color="secondary" />
         </div>
       </div>
     </q-form>
