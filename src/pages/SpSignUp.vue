@@ -79,7 +79,7 @@ const SIGN_UP_MUTATION = gql`
 `;
 
 export default defineComponent({
-  name: "SpSignIn",
+  name: "SpSignUp",
   setup() {
     const $q = useQuasar();
     const router = useRouter();
