@@ -11,7 +11,8 @@
     "@quasar/extras": "^1.12.2",
     "@vue/apollo-option": "^4.0.0-alpha.16",
     "quasar": "^2.4.3",
-    "vue": "^3.2.25"
+    "vue": "^3.2.25",
+    "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@quasar/vite-plugin": "^1.0.4",

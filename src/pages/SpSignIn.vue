@@ -66,8 +66,8 @@ export default defineComponent({
 
     const isPwd = ref<boolean>(true);
     const user = ref<Omit<ISpUser, "_id" | "name">>({
-      email: "",
-      password: ""
+      email: "test@test.com",
+      password: "1234"
     });
 
     const { mutate: login, loading } = useMutation(SIGN_IN_MUTATION, { variables: user.value });

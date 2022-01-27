@@ -7,7 +7,7 @@ const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql",
 
   // uri: "https://share-price-plus-server.herokuapp.com/graphql"
-  credentials: "same-origin"
+  credentials: "include"
 });
 
 // Create the subscription websocket link
