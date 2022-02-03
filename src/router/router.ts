@@ -9,9 +9,8 @@ export const router: Router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-  // else next()
   const { cookies } = useCookies();
-  console.log(cookies.get("spid"));
-  next();
+  const isAuthenticated = cookies.get("spid");
+  if (to.name !== "SignIn" && !isAuthenticated) next({ name: "SignIn" });
+  else next();
 });
