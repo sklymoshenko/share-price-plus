@@ -1,5 +1,5 @@
 <template>
-  <SpResultsPreview v-if="spEvent" :price="spEvent.price" :peopleConfig="spEvent.participants" hide-buttons />
+  <SpResultsPreview v-if="spEvent" :price="spEvent.price" :participants="spEvent.participants" hide-buttons />
   <SpEventNew v-else />
 </template>
 
@@ -24,7 +24,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
 
-    const spEventId: ISpEvent["_id"] = route.params._id as ISpEvent["_id"];
+    const spEventId: ISpEvent["_id"] = route.params.id as ISpEvent["_id"];
 
     const spEvent = computed((): ISpEvent | null => {
       if (spEventId === "new") return null;
