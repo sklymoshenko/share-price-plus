@@ -1,9 +1,12 @@
 // store.ts
 import { ISpUser } from "@/types/entities/user";
-import { gql } from "@apollo/client";
-import { useMutation, useQuery } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+import { apolloClient } from "@/services/apollo";
+import { provideApolloClient, useQuery } from "@vue/apollo-composable";
 import { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
+
+provideApolloClient(apolloClient);
 
 export interface State {
   currentUser: ISpUser | null;
@@ -24,8 +27,8 @@ export const store = createStore<State>({
     user: async (s): Promise<ISpUser | null> => {
       if (s.currentUser) return s.currentUser;
 
-      // const user: Promise<ISpUser | null> = await getCurrentUser();
-      return s.currentUser;
+      const user = await getCurrentUser();
+      return user;
     }
   }
 });
@@ -35,19 +38,21 @@ export function useStore() {
   return baseUseStore(key);
 }
 
-// async function getCurrentUser(): Promise<ISpUser | null> {
-//   const CURRENT_USER = gql`
-//     query CurrentUser {
-//       currentUser {
-//         _id
-//         name
-//         events
-//         eventsCount
-//         email
-//       }
-//     }
-//   `;
+async function getCurrentUser(): Promise<ISpUser | null> {
+  const CURRENT_USER = gql`
+    query CurrentUser {
+      currentUser {
+        _id
+        name
+        events
+        eventsCount
+        email
+      }
+    }
+  `;
 
-//   const { result }: any = useQuery(CURRENT_USER);
-//   return result || null;
-// }
+  const data = await useQuery(CURRENT_USER);
+  debugger;
+
+  return null;
+}

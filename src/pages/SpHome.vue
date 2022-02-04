@@ -44,16 +44,20 @@
         </q-item>
       </q-list>
     </q-card-section>
+    <p>{{ user }}</p>
   </q-card>
 </template>
 
 <script lang="ts">
+import { useStore } from "@/store/store";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "SpHome",
   setup() {
-    return {};
+    const state = useStore();
+    const user = state.getters.user;
+    return { user };
   }
 });
 </script>
