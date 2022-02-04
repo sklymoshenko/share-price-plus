@@ -25,6 +25,7 @@
 </template>
 
 <script lang="ts">
+import { useStore } from "@/store/store";
 import { ISpUser } from "@/types/entities/user";
 import { useQuasar } from "quasar";
 import { computed, defineComponent, ref } from "vue";
@@ -32,13 +33,8 @@ import { computed, defineComponent, ref } from "vue";
 export default defineComponent({
   name: "SpUser",
   setup() {
-    const person: ISpUser = {
-      _id: "123",
-      name: "Chuck",
-      email: "chuck.horny@seznam.com",
-      eventsCount: 10,
-      totallSpent: 3000
-    };
+    const store = useStore();
+    const person: ISpUser | null = store.state.currentUser;
     const isEditMode = ref<boolean>(false);
     const $q = useQuasar();
     const saveProgress = ref<boolean>(false);
