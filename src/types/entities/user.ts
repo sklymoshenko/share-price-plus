@@ -4,5 +4,4 @@ export interface ISpUser {
   email: string;
   password?: string;
   eventsCount?: number;
-  totallSpent?: number;
 }

@@ -48,16 +48,10 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@/store/store";
-import { ISpUser } from "@/types/entities/user";
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "SpHome",
-  setup() {
-    const state = useStore();
-    return { user: computed((): ISpUser => state.getters.user) };
-  }
+  name: "SpHome"
 });
 </script>
 

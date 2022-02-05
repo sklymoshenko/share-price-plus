@@ -3,7 +3,7 @@
     <div>
       <div class="text-h6">User info</div>
     </div>
-    <q-card flat bordered class="my-card full-width">
+    <q-card flat bordered class="my-card full-width" v-if="person">
       <q-card-section>
         <q-input v-model="person.name" filled clearable dense :hint="'Name'" :disable="!isEditMode" />
         <q-input v-model="person.email" filled dense clearable :hint="'Email'" class="q-mt-md" :disable="!isEditMode" />
@@ -13,7 +13,6 @@
 
       <q-card-section class="column items-start">
         <div class="text-subtitle1">Totall events: {{ person.eventsCount }}</div>
-        <div class="text-subtitle1">Totall spent: {{ person.totallSpent }}</div>
       </q-card-section>
 
       <q-card-section class="row justify-between">
@@ -34,7 +33,7 @@ export default defineComponent({
   name: "SpUser",
   setup() {
     const store = useStore();
-    const person: ISpUser | null = store.state.currentUser;
+    const person = computed<ISpUser | null>(() => store.state.currentUser);
     const isEditMode = ref<boolean>(false);
     const $q = useQuasar();
     const saveProgress = ref<boolean>(false);
