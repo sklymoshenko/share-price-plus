@@ -66,6 +66,7 @@ import { useMutation } from "@vue/apollo-composable";
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
+import { useStore } from "@/store/store";
 
 const SIGN_UP_MUTATION = gql`
   mutation register($password: String!, $email: String!, $name: String!) {
@@ -83,6 +84,7 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const router = useRouter();
+    const store = useStore();
     const user = ref<Omit<ISpUser, "_id">>({
       name: "",
       email: "",
@@ -94,7 +96,11 @@ export default defineComponent({
 
     const onSubmit = async () => {
       try {
-        const { register } = (await signUp()) as { register: ISpUser };
+        const {
+          data: { register }
+        } = (await signUp()) as { data: { register: ISpUser } };
+
+        store.commit("setCurrentUser", register);
         router.push("/");
       } catch (err: any) {
         $q.notify({
