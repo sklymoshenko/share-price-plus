@@ -10,6 +10,7 @@
     "@apollo/client": "^3.5.7",
     "@quasar/extras": "^1.12.2",
     "@vue/apollo-option": "^4.0.0-alpha.16",
+    "luxon": "^2.3.0",
     "quasar": "^2.4.3",
     "vue": "^3.2.25",
     "vue3-cookies": "^1.0.6",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@quasar/vite-plugin": "^1.0.4",
+    "@types/luxon": "^2.0.9",
     "@types/node": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",

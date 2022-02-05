@@ -8,6 +8,6 @@ export interface ISpEvent {
   peopleCount: number;
   participants: ISpParticipant[];
   isClosed: boolean;
-  _createdAt?: string;
-  _closedAt?: string;
+  createdAt?: string;
+  closedAt?: string;
 }

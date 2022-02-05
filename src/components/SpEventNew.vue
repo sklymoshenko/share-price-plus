@@ -48,6 +48,7 @@ import SpPersonItem from "./SpPersonItem.vue";
 import { ISpEvent } from "@/types/entities/event";
 import { ISpParticipant } from "@/types/spPeopleConfig";
 import { ISpUser } from "@/types/entities/user";
+import { useMutation } from "@vue/apollo-composable";
 
 const USERS_QUERY = gql`
   query SpUsersJson {
@@ -73,13 +74,11 @@ export default defineComponent({
   components: { SpPersonItem },
   async setup() {
     const $q = useQuasar();
-
     const saveProgress = ref<boolean>(false);
     const route = useRouter();
 
-    const spEvent = ref<ISpEvent>({
+    const spEvent = ref<Omit<ISpEvent, "_id">>({
       name: "",
-      _id: "newEventId",
       each: 0,
       isClosed: false,
       participants: [],
@@ -87,8 +86,27 @@ export default defineComponent({
       price: 0
     });
 
-    const createEvent = (): void => {
-      simulateLoading();
+    const { mutate: createSpEvent, loading } = useMutation(CREATE_EVENT_MUTATION, {
+      variables: { data: spEvent.value }
+    });
+    const createEvent = async (): Promise<void> => {
+      try {
+        const {
+          data: { createEvent }
+        } = (await createSpEvent()) as { data: { createEvent: ISpEvent } };
+
+        $q.notify({
+          message: "Event created!",
+          type: "positive"
+        });
+
+        route.push({ name: "Events" });
+      } catch (err: any) {
+        $q.notify({
+          message: err.message,
+          type: "negative"
+        });
+      }
     };
 
     const getUsers = async (): Promise<ISpUser[]> => {
@@ -123,7 +141,7 @@ export default defineComponent({
         route.push({ name: "Events" });
       }, 3000);
     };
-    return { spEvent, participants, deleteParticipant, createEvent, saveProgress };
+    return { spEvent, participants, deleteParticipant, createEvent, saveProgress, loading };
   }
 });
 </script>
