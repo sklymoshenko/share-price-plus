@@ -24,11 +24,11 @@ export const store = createStore<State>({
     }
   },
   getters: {
-    user: async (s): Promise<ISpUser | null> => {
+    user: (s): ISpUser | null => {
       if (s.currentUser) return s.currentUser;
 
-      const user = await getCurrentUser();
-      return user;
+      const { currentUser } = getCurrentUser() || ({} as { currentUser: ISpUser | null });
+      return currentUser;
     }
   }
 });
@@ -38,7 +38,7 @@ export function useStore() {
   return baseUseStore(key);
 }
 
-async function getCurrentUser(): Promise<ISpUser | null> {
+function getCurrentUser(): { currentUser: ISpUser | null } {
   const CURRENT_USER = gql`
     query CurrentUser {
       currentUser {
@@ -51,8 +51,6 @@ async function getCurrentUser(): Promise<ISpUser | null> {
     }
   `;
 
-  const data = await useQuery(CURRENT_USER);
-  debugger;
-
-  return null;
+  const { result } = useQuery(CURRENT_USER);
+  return result.value || null;
 }

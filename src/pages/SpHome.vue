@@ -44,20 +44,19 @@
         </q-item>
       </q-list>
     </q-card-section>
-    <p>{{ user }}</p>
   </q-card>
 </template>
 
 <script lang="ts">
 import { useStore } from "@/store/store";
-import { defineComponent } from "vue";
+import { ISpUser } from "@/types/entities/user";
+import { computed, defineComponent } from "vue";
 
 export default defineComponent({
   name: "SpHome",
   setup() {
     const state = useStore();
-    const user = state.getters.user;
-    return { user };
+    return { user: computed((): ISpUser => state.getters.user) };
   }
 });
 </script>
