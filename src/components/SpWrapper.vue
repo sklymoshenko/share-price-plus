@@ -1,5 +1,8 @@
 <template>
-  <router-view></router-view>
+  <!-- To use a async setup in child components -->
+  <Suspense>
+    <router-view></router-view>
+  </Suspense>
 </template>
 
 <script lang="ts">

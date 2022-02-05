@@ -38,19 +38,42 @@
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
+import { apolloClient } from "@/services/apollo";
+import gql from "graphql-tag";
+
+// Components
+import SpPersonItem from "./SpPersonItem.vue";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
 import { ISpParticipant } from "@/types/spPeopleConfig";
-import SpPersonItem from "./SpPersonItem.vue";
+import { ISpUser } from "@/types/entities/user";
 
-// Mock
-import { usersMock } from "@/mock";
+const USERS_QUERY = gql`
+  query SpUsersJson {
+    spUsersJson {
+      _id
+      name
+    }
+  }
+`;
+
+const CREATE_EVENT_MUTATION = gql`
+  mutation CreateEvent($data: CreateEvent!) {
+    createEvent(data: $data) {
+      _id
+      name
+      each
+      price
+    }
+  }
+`;
 
 export default defineComponent({
   components: { SpPersonItem },
-  setup() {
+  async setup() {
     const $q = useQuasar();
+
     const saveProgress = ref<boolean>(false);
     const route = useRouter();
 
@@ -64,26 +87,25 @@ export default defineComponent({
       price: 0
     });
 
-    const getUsers = (): ISpEvent["participants"] => {
-      return usersMock.map((u) => ({
-        _id: u._id,
-        name: u.name,
-        paid: 0,
-        ows: 0,
-        exceed: 0,
-        loaners: []
-      }));
+    const createEvent = (): void => {
+      simulateLoading();
     };
 
-    // Load on created
-    const participants: ISpEvent["participants"] = getUsers();
+    const getUsers = async (): Promise<ISpUser[]> => {
+      // Gets error with type ApolloQueryResult<any>
+      const {
+        data: { spUsersJson }
+      }: any | { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
+        query: USERS_QUERY
+      });
+
+      return spUsersJson;
+    };
+
+    const participants: ISpUser[] = await getUsers();
 
     const deleteParticipant = (participant: ISpParticipant) => {
       spEvent.value.participants = spEvent.value.participants.filter((p) => p._id !== participant._id);
-    };
-
-    const createEvent = (): void => {
-      simulateLoading();
     };
 
     const simulateLoading = (): void => {
