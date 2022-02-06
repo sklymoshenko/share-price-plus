@@ -2,7 +2,7 @@
   <div>
     <div class="events-bar row justify-between">
       <div class="text-h6 text-left">Events</div>
-      <q-page-sticky position="top-right" :offset="[50, 1]">
+      <q-page-sticky position="top-right" :offset="[50, 0]">
         <q-btn color="primary" icon="add" :to="{ name: 'Event', params: { id: 'new' } }" />
       </q-page-sticky>
     </div>
@@ -19,7 +19,7 @@ import { computed, defineComponent } from "vue";
 import { useStore } from "@/store/store";
 
 // Components
-import SpEventItem from "@/components/SpEventItem.vue";
+import SpEventItem from "@/components/SpEvent/SpEventItem.vue";
 
 // Types
 import { ISpUser } from "@/types/entities/user";

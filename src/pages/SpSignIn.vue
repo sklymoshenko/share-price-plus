@@ -68,7 +68,7 @@ export default defineComponent({
     const store = useStore();
 
     const isPwd = ref<boolean>(true);
-    const user = ref<Omit<ISpUser, "_id" | "name">>({
+    const user = ref<Pick<ISpUser, "email" | "password">>({
       email: "test@test.com",
       password: "1234"
     });

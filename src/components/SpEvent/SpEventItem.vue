@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable class="q-pa-lg" :to="{ name: 'Event', params: { id: spEvent._id } }">
+  <q-item clickable class="q-pa-sm" :to="{ name: 'Event', params: { id: spEvent._id } }">
     <q-item-section class="text-left">
       <q-item-label class="text-subtitle1 ellipsis">{{ spEvent.name }}</q-item-label>
       <q-item-label caption> Totall: {{ spEvent.price }}. Each: {{ spEvent.each }}.</q-item-label>

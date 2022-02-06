@@ -42,7 +42,7 @@ import { apolloClient } from "@/services/apollo";
 import gql from "graphql-tag";
 
 // Components
-import SpPersonItem from "./SpPersonItem.vue";
+import SpPersonItem from "../SpPersonItem.vue";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
@@ -71,6 +71,7 @@ const CREATE_EVENT_MUTATION = gql`
 `;
 
 export default defineComponent({
+  name: "SpEventNew",
   components: { SpPersonItem },
   async setup() {
     const $q = useQuasar();
