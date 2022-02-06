@@ -17,56 +17,21 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useStore } from "@/store/store";
-import { useQuery, useResult } from "@vue/apollo-composable";
 
 // Components
 import SpEventItem from "@/components/SpEventItem.vue";
 
 // Types
 import { ISpUser } from "@/types/entities/user";
-
-// Mocks
-import gql from "graphql-tag";
 import { ISpEvent } from "@/types/entities/event";
-
-const EVENTS_QUERY = gql`
-  query SpEvents($idIn: [ID!]) {
-    spEvents(_id_in: $idIn) {
-      _id
-      name
-      price
-      each
-      peopleCount
-      participants {
-        _id
-        name
-        paid
-        ows
-        exceed
-        loaners {
-          _id
-          name
-          paid
-        }
-      }
-      isClosed
-      closedAt
-      createdAt
-      updatedAt
-    }
-  }
-`;
 
 export default defineComponent({
   name: "SpEvents",
-  setup() {
+  async setup() {
     const store = useStore();
-    const currentUser = computed((): ISpUser | null => store.state.currentUser);
-
-    const { result } = useQuery<{ spEvents: ISpEvent[] }>(EVENTS_QUERY, {
-      variables: { idIn: currentUser.value?._id }
-    });
-    const events = useResult(result, [], (data) => data.spEvents);
+    const currentUser = computed<ISpUser | null>(() => store.state.currentUser);
+    await store.dispatch("getEvents");
+    const events = computed<ISpEvent[] | null>(() => store.state.spEvents);
 
     return { events, currentUser };
   },

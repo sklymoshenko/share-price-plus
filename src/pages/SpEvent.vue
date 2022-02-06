@@ -6,26 +6,32 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useRoute } from "vue-router";
+import { useStore } from "@/store/store";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
 
 // Components
 import SpResultsPreview from "@/components/SpResultsPreview.vue";
-import { calculateResults } from "@/services/calculations";
 import SpEventNew from "@/components/SpEventNew.vue";
+
+// Services
+import { calculateResults } from "@/services/calculations";
 
 export default defineComponent({
   name: "SpEvent",
   components: { SpResultsPreview, SpEventNew },
   setup() {
     const route = useRoute();
-
+    const store = useStore();
     const spEventId: ISpEvent["_id"] = route.params.id as ISpEvent["_id"];
+
+    // Property 'find' does not exist on type 'ComputedRef<ISpEvent[]> changing target of ts compiler didnt work :/
+    const events = computed<ISpEvent[]>(() => store.state.spEvents || []);
 
     const spEvent = computed((): ISpEvent | null => {
       if (spEventId === "new") return null;
-      return events.find((e) => e._id === spEventId) || events[0];
+      return events.value.find((e: ISpEvent) => e._id === spEventId) || events.value[0];
     });
 
     // Calculate on mount

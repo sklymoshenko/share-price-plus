@@ -1,6 +1,8 @@
 <template>
   <ReloadPWA />
-  <SpWrapper />
+  <Suspense>
+    <SpWrapper />
+  </Suspense>
 </template>
 
 <script lang="ts">
