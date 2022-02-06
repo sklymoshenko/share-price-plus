@@ -51,10 +51,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "SpHome",
-  setup() {
-    return {};
-  }
+  name: "SpHome"
 });
 </script>
 

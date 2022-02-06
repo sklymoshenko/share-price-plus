@@ -4,6 +4,7 @@ import { Quasar, Notify } from "quasar";
 import { router } from "@/router/router";
 import { apolloClient } from "./services/apollo";
 import { provideApolloClient } from "@vue/apollo-composable";
+import { store, key } from "./store/store";
 
 // Import icon libraries
 import "@quasar/extras/material-icons/material-icons.css";
@@ -29,4 +30,5 @@ createApp({
     }
   })
   .use(router)
+  .use(store, key)
   .mount("#app");

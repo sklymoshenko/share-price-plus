@@ -41,6 +41,7 @@
 import { useQuasar } from "quasar";
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "@/store/store";
 import gql from "graphql-tag";
 
 // Types
@@ -53,6 +54,7 @@ const SIGN_IN_MUTATION = gql`
       _id
       name
       events
+      eventsCount
       email
     }
   }
@@ -63,6 +65,7 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const router = useRouter();
+    const store = useStore();
 
     const isPwd = ref<boolean>(true);
     const user = ref<Omit<ISpUser, "_id" | "name">>({
@@ -70,11 +73,14 @@ export default defineComponent({
       password: "1234"
     });
 
-    const { mutate: login, loading } = useMutation(SIGN_IN_MUTATION, { variables: user.value });
+    const { mutate: signIn, loading } = useMutation(SIGN_IN_MUTATION, { variables: user.value });
 
     const onSubmit = async () => {
       try {
-        const { signIn } = (await login()) as { signIn: ISpUser };
+        const {
+          data: { login }
+        } = (await signIn()) as { data: { login: ISpUser } };
+        store.commit("setCurrentUser", login);
         router.push("/");
       } catch (err: any) {
         $q.notify({

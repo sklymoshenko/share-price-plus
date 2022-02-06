@@ -3,7 +3,7 @@
     <div>
       <div class="text-h6">User info</div>
     </div>
-    <q-card flat bordered class="my-card full-width">
+    <q-card flat bordered class="my-card full-width" v-if="person">
       <q-card-section>
         <q-input v-model="person.name" filled clearable dense :hint="'Name'" :disable="!isEditMode" />
         <q-input v-model="person.email" filled dense clearable :hint="'Email'" class="q-mt-md" :disable="!isEditMode" />
@@ -13,7 +13,6 @@
 
       <q-card-section class="column items-start">
         <div class="text-subtitle1">Totall events: {{ person.eventsCount }}</div>
-        <div class="text-subtitle1">Totall spent: {{ person.totallSpent }}</div>
       </q-card-section>
 
       <q-card-section class="row justify-between">
@@ -25,6 +24,7 @@
 </template>
 
 <script lang="ts">
+import { useStore } from "@/store/store";
 import { ISpUser } from "@/types/entities/user";
 import { useQuasar } from "quasar";
 import { computed, defineComponent, ref } from "vue";
@@ -32,13 +32,8 @@ import { computed, defineComponent, ref } from "vue";
 export default defineComponent({
   name: "SpUser",
   setup() {
-    const person: ISpUser = {
-      _id: "123",
-      name: "Chuck",
-      email: "chuck.horny@seznam.com",
-      eventsCount: 10,
-      totallSpent: 3000
-    };
+    const store = useStore();
+    const person = computed<ISpUser | null>(() => store.state.currentUser);
     const isEditMode = ref<boolean>(false);
     const $q = useQuasar();
     const saveProgress = ref<boolean>(false);

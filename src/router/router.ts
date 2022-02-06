@@ -8,9 +8,11 @@ export const router: Router = createRouter({
   routes
 });
 
+const safeRoutes = ["SignIn", "SignUp"];
+
 router.beforeEach((to, from, next) => {
   const { cookies } = useCookies();
   const isAuthenticated = cookies.get("spid");
-  if (to.name !== "SignIn" && !isAuthenticated) next({ name: "SignIn" });
+  if (!safeRoutes.includes(String(to.name)) && !isAuthenticated) next({ name: "SignIn" });
   else next();
 });

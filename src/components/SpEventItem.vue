@@ -7,14 +7,17 @@
     </q-item-section>
 
     <q-item-section side class="column justify-between">
-      <q-item-label caption>{{ spEvent._createdAt }}</q-item-label>
-      <q-item-label v-if="spEvent.isClosed" caption>{{ spEvent._closedAt }}</q-item-label>
+      <q-item-label v-if="spEvent.createdAt" caption>{{ mainFormat(spEvent.createdAt) }}</q-item-label>
+      <q-item-label v-if="spEvent.closedAt" caption>{{ mainFormat(spEvent.closedAt) }}</q-item-label>
     </q-item-section>
   </q-item>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
+
+// Services
+import { mainFormat } from "@/services/dates";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
@@ -28,15 +31,15 @@ export default defineComponent({
       required: true
     },
     currentUser: {
-      type: Object as PropType<ISpUser>,
+      type: Object as PropType<ISpUser | null>,
       required: true
     }
   },
   setup({ spEvent, currentUser }) {
     const selfPaied = computed(() => {
-      return spEvent.participants.find((p) => p._id === currentUser._id)?.paid || 0;
+      return spEvent.participants.find((p) => p._id === currentUser?._id)?.paid || 0;
     });
-    return { selfPaied };
+    return { selfPaied, mainFormat };
   }
 });
 </script>
