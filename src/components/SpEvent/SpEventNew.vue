@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { apolloClient } from "@/services/apollo";
@@ -45,10 +45,11 @@ import gql from "graphql-tag";
 import SpPersonItem from "../SpPersonItem.vue";
 
 // Types
-import { ISpEvent } from "@/types/entities/event";
-import { ISpParticipant } from "@/types/spPeopleConfig";
+import { ISpEvent, ISpEventUpload } from "@/types/entities/event";
+import { ISpParticipantUpload } from "@/types/spPeopleConfig";
 import { ISpUser } from "@/types/entities/user";
 import { useMutation } from "@vue/apollo-composable";
+import { useStore } from "@/store/store";
 
 const USERS_QUERY = gql`
   query SpUsersJson {
@@ -64,8 +65,13 @@ const CREATE_EVENT_MUTATION = gql`
     createEvent(data: $data) {
       _id
       name
-      each
       price
+      each
+      peopleCount
+      isClosed
+      closedAt
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -73,18 +79,21 @@ const CREATE_EVENT_MUTATION = gql`
 export default defineComponent({
   name: "SpEventNew",
   components: { SpPersonItem },
-  async setup() {
+  props: {
+    currentUser: {
+      type: Object as PropType<ISpUser>,
+      required: true
+    }
+  },
+  async setup({ currentUser }) {
     const $q = useQuasar();
     const saveProgress = ref<boolean>(false);
     const route = useRouter();
+    const store = useStore();
 
-    const spEvent = ref<Omit<ISpEvent, "_id">>({
+    const spEvent = ref<ISpEventUpload>({
       name: "",
-      each: 0,
-      isClosed: false,
-      participants: [],
-      peopleCount: 0,
-      price: 0
+      participants: [{ _id: currentUser._id, paid: 0, name: currentUser.name }]
     });
 
     const { mutate: createSpEvent, loading } = useMutation(CREATE_EVENT_MUTATION, {
@@ -92,15 +101,12 @@ export default defineComponent({
     });
     const createEvent = async (): Promise<void> => {
       try {
-        const {
-          data: { createEvent }
-        } = (await createSpEvent()) as { data: { createEvent: ISpEvent } };
-
+        await createSpEvent();
+        await store.dispatch("getUserEvents", currentUser._id);
         $q.notify({
           message: "Event created!",
           type: "positive"
         });
-
         route.push({ name: "Events" });
       } catch (err: any) {
         $q.notify({
@@ -122,7 +128,7 @@ export default defineComponent({
 
     const participants: ISpUser[] = await getUsers();
 
-    const deleteParticipant = (participant: ISpParticipant) => {
+    const deleteParticipant = (participant: ISpParticipantUpload | ISpUser) => {
       spEvent.value.participants = spEvent.value.participants.filter((p) => p._id !== participant._id);
     };
 

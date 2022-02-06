@@ -8,6 +8,7 @@ import { apolloClient } from "@/services/apollo";
 // Queries
 import { EVENTS_QUERY } from "@/queries/spEvents";
 import { CURRENT_USER } from "@/queries/spCurrentUser";
+import { USER_QUERY } from "@/queries/spUser";
 
 export interface State {
   currentUser: ISpUser | null;
@@ -30,14 +31,13 @@ export const store = createStore<State>({
     }
   },
   actions: {
-    async getEvents({ state, commit }): Promise<void> {
-      if (!state.currentUser) return;
+    async getEvents({ commit }, eventsIds: ISpEvent["_id"][]): Promise<void> {
       const {
         data: { spEvents }
       }: { data: { spEvents: ISpEvent[] } } = await apolloClient.query({
         query: EVENTS_QUERY,
         variables: {
-          idIn: state.currentUser?.events
+          idIn: eventsIds
         }
       });
       commit("setEvents", spEvents);
@@ -49,6 +49,18 @@ export const store = createStore<State>({
         query: CURRENT_USER
       });
       commit("setCurrentUser", currentUser);
+    },
+    async getUserEvents({ state, commit }, id: ISpUser["_id"]): Promise<void> {
+      if (!id) return;
+      const {
+        data: { spUsers }
+      }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
+        query: USER_QUERY
+      });
+
+      if (id === state.currentUser?._id) {
+        commit("setCurrentUser", { ...state.currentUser, events: spUsers[0].events });
+      }
     }
   }
 });

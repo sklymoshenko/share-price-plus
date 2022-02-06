@@ -1,7 +1,12 @@
 <template>
-  <SpEventNew v-if="isNew" />
-  <SpEventEdit v-if="!spEvent?.isClosed" :sp-event="spEvent" :current-user="currentUser" />
-  <SpResultsPreview v-if="spEvent?.isClosed" :price="spEvent.price" :participants="spEvent.participants" hide-buttons />
+  <SpEventNew v-if="isNew" :current-user="currentUser" />
+  <SpEventEdit v-else-if="!spEvent?.isClosed" :sp-event="spEvent" :current-user="currentUser" />
+  <SpResultsPreview
+    v-else-if="spEvent?.isClosed"
+    :price="spEvent.price"
+    :participants="spEvent.participants"
+    hide-buttons
+  />
 </template>
 
 <script lang="ts">

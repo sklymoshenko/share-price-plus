@@ -30,7 +30,10 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const currentUser = computed<ISpUser | null>(() => store.state.currentUser);
-    await store.dispatch("getEvents");
+    await store.dispatch(
+      "getEvents",
+      currentUser.value?.events.map((id) => id)
+    );
     const events = computed<ISpEvent[] | null>(() => store.state.spEvents);
 
     return { events, currentUser };
