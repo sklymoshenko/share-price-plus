@@ -10,9 +10,6 @@ import { useRoute } from "vue-router";
 // Types
 import { ISpEvent } from "@/types/entities/event";
 
-// Mocks
-import { events } from "@/mock";
-
 // Components
 import SpResultsPreview from "@/components/SpResultsPreview.vue";
 import { calculateResults } from "@/services/calculations";
