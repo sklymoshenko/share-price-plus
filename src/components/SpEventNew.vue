@@ -110,10 +110,9 @@ export default defineComponent({
     };
 
     const getUsers = async (): Promise<ISpUser[]> => {
-      // Gets error with type ApolloQueryResult<any>
       const {
         data: { spUsersJson }
-      }: any | { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
+      }: { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
         query: USERS_QUERY
       });
 

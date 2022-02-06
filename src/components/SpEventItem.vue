@@ -32,7 +32,7 @@ export default defineComponent({
     },
     currentUser: {
       type: Object as PropType<ISpUser | null>,
-      required: true
+      default: null
     }
   },
   setup({ spEvent, currentUser }) {
