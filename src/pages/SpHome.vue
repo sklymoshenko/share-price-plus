@@ -44,14 +44,37 @@
         </q-item>
       </q-list>
     </q-card-section>
+    <p>{{ counter }}</p>
   </q-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, watch } from "vue";
+import { useSubscription } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+
+const SUBSCRIPTION = gql`
+  subscription Subscription {
+    newNotification {
+      message
+      counter
+    }
+  }
+`;
 
 export default defineComponent({
-  name: "SpHome"
+  name: "SpHome",
+  setup() {
+    const counter = ref(0);
+    const { result } = useSubscription(SUBSCRIPTION);
+
+    watch(result, (data) => {
+      console.log("New message received:", data.newNotification.counter);
+      counter.value = data.newNotification.counter;
+    });
+
+    return { counter };
+  }
 });
 </script>
 
