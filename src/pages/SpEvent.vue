@@ -23,7 +23,6 @@ import SpEventNew from "@/components/SpEvent/SpEventNew.vue";
 import SpEventEdit from "@/components/SpEvent/SpEventEdit/SpEventEdit.vue";
 
 // Services
-import { calculateResults } from "@/services/calculations";
 import { ISpUser } from "@/types/entities/user";
 
 export default defineComponent({
@@ -41,11 +40,6 @@ export default defineComponent({
     const spEvent = computed((): ISpEvent => {
       return events.value.find((e: ISpEvent) => e._id === spEventId) || events.value[0];
     });
-
-    // Calculate on mount
-    if (spEvent.value) {
-      calculateResults(spEvent.value.participants, spEvent.value.price);
-    }
 
     return { spEvent, isNew, currentUser };
   }

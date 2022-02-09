@@ -14,7 +14,7 @@
 import { computed, defineComponent, PropType, ref } from "vue";
 
 // Types
-import { ISpEvent } from "@/types/entities/event";
+import { ISpEvent, ISpEventUpload } from "@/types/entities/event";
 import { ISpUser } from "@/types/entities/user";
 import { ISpParticipant } from "@/types/spPeopleConfig";
 
@@ -22,6 +22,11 @@ import { ISpParticipant } from "@/types/spPeopleConfig";
 import SpEventEditMainInfo from "./SpEventEditMainInfo.vue";
 import SpEventEditUser from "./SpEventEditUser.vue";
 import SpEventEditParticipants from "./SpEventEditParticipants.vue";
+import { useStore } from "@/store/store";
+
+// lodash
+// @ts-ignore
+import cloneDeep from "lodash/cloneDeep";
 
 export default defineComponent({
   name: "SpEventEdit",
@@ -37,11 +42,25 @@ export default defineComponent({
     }
   },
   setup({ spEvent, currentUser }) {
+    const store = useStore();
     const selfParticipant = computed<ISpParticipant>(
       () => spEvent.participants.find((p) => p._id === currentUser?._id)!
     );
 
-    const addAdditionalPayment = () => {};
+    const addAdditionalPayment = async (paid: ISpParticipant["paid"]): Promise<void> => {
+      const participants: ISpParticipant[] = cloneDeep(spEvent.participants);
+      const participant = participants.find((p) => p._id === currentUser?._id)!;
+      participant.paid += paid;
+
+      const payload: { updateEventId: ISpEvent["_id"]; data: ISpEventUpload } = {
+        updateEventId: spEvent._id,
+        data: {
+          participants: participants
+        }
+      };
+
+      await store.dispatch("updateEvent", payload);
+    };
 
     return {
       spEvent,

@@ -6,9 +6,10 @@ import { createStore, useStore as baseUseStore, Store } from "vuex";
 import { apolloClient } from "@/services/apollo";
 
 // Queries
-import { EVENTS_QUERY } from "@/queries/spEvents";
-import { CURRENT_USER } from "@/queries/spCurrentUser";
-import { USER_QUERY } from "@/queries/spUser";
+import { EVENTS_QUERY } from "@/gql/queries/spEvents";
+import { CURRENT_USER } from "@/gql/queries/spCurrentUser";
+import { USER_QUERY } from "@/gql/queries/spUser";
+import { UPDATE_EVENT } from "@/gql/mutations/updateEvent";
 
 export interface State {
   currentUser: ISpUser | null;
@@ -61,6 +62,12 @@ export const store = createStore<State>({
       if (id === state.currentUser?._id) {
         commit("setCurrentUser", { ...state.currentUser, events: spUsers[0].events });
       }
+    },
+    async updateEvent({}, data) {
+      const result: { data?: { updateEvent: ISpEvent } | null | undefined } = await apolloClient.mutate({
+        mutation: UPDATE_EVENT,
+        variables: data
+      });
     }
   }
 });

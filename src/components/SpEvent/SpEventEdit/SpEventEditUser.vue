@@ -59,7 +59,7 @@ export default defineComponent({
     const selfPaied = selfParticipant.paid || 0;
 
     const userOws = computed<number>(() => each - selfPaied);
-    const isOws = computed<boolean>(() => userOws.value < 0);
+    const isOws = computed<boolean>(() => userOws.value > 0);
     const userAdditionalPay = ref(0);
 
     const addAdditionalPayment = () => {
