@@ -102,7 +102,7 @@ export default defineComponent({
     const createEvent = async (): Promise<void> => {
       try {
         await createSpEvent();
-        await store.dispatch("getUserEvents", currentUser._id);
+        await store.dispatch("getUserEventsIds", currentUser._id);
         $q.notify({
           message: "Event created!",
           type: "positive"

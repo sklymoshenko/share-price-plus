@@ -43,7 +43,6 @@ export default defineComponent({
     const { result } = useSubscription(EVENT_PAYED_SUBSCRIPTION);
 
     watch(result, ({ eventPayed }) => {
-      debugger;
       total.value = eventPayed.total;
       eachPayed.value = eventPayed.each;
     });

@@ -31,7 +31,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from "vue";
+import { defineComponent, PropType, computed, ref, toRefs } from "vue";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
@@ -55,10 +55,11 @@ export default defineComponent({
       required: true
     }
   },
-  setup({ currentUser, selfParticipant, each }, { emit }) {
-    const selfPaied = selfParticipant.paid || 0;
+  setup(props, { emit }) {
+    const { currentUser, selfParticipant, each } = toRefs(props);
+    const selfPaied = computed<number>(() => selfParticipant.value.paid);
 
-    const userOws = computed<number>(() => each - selfPaied);
+    const userOws = computed<number>(() => each.value - selfPaied.value);
     const isOws = computed<boolean>(() => userOws.value > 0);
     const userAdditionalPay = ref(0);
 

@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref, toRefs } from "vue";
 
 // Types
 import { ISpEvent, ISpEventUpload } from "@/types/entities/event";
@@ -41,30 +41,29 @@ export default defineComponent({
       required: true
     }
   },
-  setup({ spEvent, currentUser }) {
+  setup(props) {
+    const { spEvent, currentUser } = toRefs(props);
     const store = useStore();
     const selfParticipant = computed<ISpParticipant>(
-      () => spEvent.participants.find((p) => p._id === currentUser?._id)!
+      () => spEvent.value.participants.find((p) => p._id === currentUser.value?._id)!
     );
 
     const addAdditionalPayment = async (paid: ISpParticipant["paid"]): Promise<void> => {
-      const participants: ISpParticipant[] = cloneDeep(spEvent.participants);
-      const participant = participants.find((p) => p._id === currentUser?._id)!;
+      const participants: ISpParticipant[] = cloneDeep(spEvent.value.participants);
+      const participant = participants.find((p) => p._id === currentUser.value?._id)!;
       participant.paid += paid;
 
       const payload: { updateEventId: ISpEvent["_id"]; data: ISpEventUpload } = {
-        updateEventId: spEvent._id,
+        updateEventId: spEvent.value._id,
         data: {
           participants: participants
         }
       };
 
-      await store.dispatch("updateEvent", payload);
+      await store.dispatch("updateEvent", { data: payload, current: true });
     };
 
     return {
-      spEvent,
-      currentUser,
       addAdditionalPayment,
       selfParticipant
     };

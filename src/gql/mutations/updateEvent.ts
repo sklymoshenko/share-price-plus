@@ -4,6 +4,26 @@ export const UPDATE_EVENT = gql`
   mutation UpdateEvent($data: UpdateEvent!, $updateEventId: String!) {
     updateEvent(data: $data, id: $updateEventId) {
       _id
+      name
+      price
+      each
+      peopleCount
+      participants {
+        _id
+        name
+        paid
+        ows
+        exceed
+        loaners {
+          _id
+          name
+          paid
+        }
+      }
+      isClosed
+      closedAt
+      createdAt
+      updatedAt
     }
   }
 `;
