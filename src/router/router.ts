@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, Router } from "vue-router";
 import { routes } from "../router/routes";
-import { useCookies } from "vue3-cookies";
+import { store } from "@/store/store";
 
 // Vue router
 export const router: Router = createRouter({
@@ -11,8 +11,7 @@ export const router: Router = createRouter({
 const safeRoutes = ["SignIn", "SignUp"];
 
 router.beforeEach((to, from, next) => {
-  const { cookies } = useCookies();
-  const isAuthenticated = cookies.get("spid");
+  const isAuthenticated = !!store.state.currentUser;
   if (!safeRoutes.includes(String(to.name)) && !isAuthenticated) next({ name: "SignIn" });
   else next();
 });
