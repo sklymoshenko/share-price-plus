@@ -4,7 +4,7 @@
       <div class="sp-participant-name text-body text-bold q-mr-sm">{{ participant.name }}:</div>
       <div class="sp-participant-price text-body">{{ participant.paid }}</div>
       <div class="row items-end justify-center" v-if="participant.ows">
-        <div class="sp-event-name text-body q-ml-md q-mr-sm">Ows:</div>
+        <div class="sp-event-name text-subtitle2 q-ml-md q-mr-sm">Ows:</div>
         <div class="sp-event-price text-body">{{ participant.ows }}</div>
       </div>
     </div>
