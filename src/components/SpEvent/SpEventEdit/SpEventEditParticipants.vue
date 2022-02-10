@@ -11,26 +11,30 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType, toRefs } from "vue";
 
 // Types
-import { ISpEvent } from "@/types/entities/event";
+import { IEventPayedPayload } from "@/types/entities/event";
 import { ISpParticipant } from "@/types/spPeopleConfig";
 
 export default defineComponent({
   name: "SpEventEditParticipants",
   props: {
     participants: {
-      type: Array as PropType<ISpEvent["participants"]>,
+      type: Array as PropType<IEventPayedPayload["participants"]>,
       required: true
     },
     selfParticipant: {
-      type: Object as PropType<ISpParticipant>,
+      type: Object as PropType<Omit<ISpParticipant, "exceed" | "loaners">>,
       required: true
     }
   },
-  setup({ participants, selfParticipant }) {
-    const eventParticipants = participants.filter((p) => p._id !== selfParticipant._id);
+  setup(props) {
+    const { participants, selfParticipant } = toRefs(props);
+    const eventParticipants = computed<IEventPayedPayload["participants"]>(() =>
+      participants.value.filter((p) => p._id !== selfParticipant.value._id)
+    );
+
     return { eventParticipants };
   }
 });

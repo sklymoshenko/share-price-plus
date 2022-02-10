@@ -3,24 +3,22 @@
     <div class="col">
       <div class="row items-end justify-between">
         <div class="sp-event-name text-h6 q-mr-sm">{{ name }}:</div>
-        <div class="sp-event-price text-h4">{{ total }}</div>
+        <div class="sp-event-price text-h4">{{ totalPrice }}</div>
       </div>
     </div>
     <div class="col">
       <div class="row items-end justify-between">
         <div class="sp-event-name text-h6 q-mr-sm">Each:</div>
-        <div class="sp-event-price text-h4">{{ eachPayed }}</div>
+        <div class="sp-event-price text-h4">{{ each }}</div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, watch, ref } from "vue";
-import { useSubscription } from "@vue/apollo-composable";
+import { defineComponent, PropType } from "vue";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
-import { EVENT_PAYED_SUBSCRIPTION } from "@/gql/subscriptions/eventPayed";
 
 export default defineComponent({
   name: "SpEventEditMainInfo",
@@ -37,18 +35,7 @@ export default defineComponent({
       type: String as PropType<ISpEvent["name"]>
     }
   },
-  setup({ totalPrice, each }) {
-    const total = ref(totalPrice);
-    const eachPayed = ref(each);
-    const { result } = useSubscription(EVENT_PAYED_SUBSCRIPTION);
-
-    watch(result, ({ eventPayed }) => {
-      total.value = eventPayed.total;
-      eachPayed.value = eventPayed.each;
-    });
-
-    return { total, eachPayed };
-  }
+  setup() {}
 });
 </script>
 

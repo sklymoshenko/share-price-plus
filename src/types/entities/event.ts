@@ -22,3 +22,14 @@ export interface ISpEventUpload {
   createdAt?: string;
   closedAt?: string;
 }
+
+export interface IEventPayedPayload {
+  total: number;
+  each: number;
+  participants: {
+    _id: ISpParticipant["_id"];
+    ows: ISpParticipant["ows"];
+    paid: ISpParticipant["paid"];
+    name: ISpParticipant["name"];
+  }[];
+}

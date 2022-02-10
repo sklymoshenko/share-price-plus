@@ -47,7 +47,7 @@ export default defineComponent({
       required: true
     },
     selfParticipant: {
-      type: Object as PropType<ISpParticipant>,
+      type: Object as PropType<Omit<ISpParticipant, "exceed" | "loaners">>,
       required: true
     },
     each: {

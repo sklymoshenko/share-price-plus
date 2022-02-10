@@ -1,20 +1,20 @@
 <template>
-  <SpEventEditMainInfo :totalPrice="spEvent.price" :name="spEvent.name" :each="spEvent.each" />
+  <SpEventEditMainInfo :totalPrice="total" :name="spEvent.name" :each="eachPayed" />
   <hr />
   <SpEventEditUser
     :currentUser="currentUser"
     :selfParticipant="selfParticipant"
-    :each="spEvent.each"
+    :each="eachPayed"
     @addAdditionalPayment="addAdditionalPayment"
   />
-  <SpEventEditParticipants :participants="spEvent.participants" :selfParticipant="selfParticipant" />
+  <SpEventEditParticipants :participants="participantsInfo" :selfParticipant="selfParticipant" />
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, toRefs } from "vue";
+import { computed, defineComponent, PropType, ref, toRefs, watch } from "vue";
 
 // Types
-import { ISpEvent, ISpEventUpload } from "@/types/entities/event";
+import { IEventPayedPayload, ISpEvent, ISpEventUpload } from "@/types/entities/event";
 import { ISpUser } from "@/types/entities/user";
 import { ISpParticipant } from "@/types/spPeopleConfig";
 
@@ -27,6 +27,8 @@ import { useStore } from "@/store/store";
 // lodash
 // @ts-ignore
 import cloneDeep from "lodash/cloneDeep";
+import { useSubscription } from "@vue/apollo-composable";
+import { EVENT_PAYED_SUBSCRIPTION } from "@/gql/subscriptions/eventPayed";
 
 export default defineComponent({
   name: "SpEventEdit",
@@ -44,9 +46,12 @@ export default defineComponent({
   setup(props) {
     const { spEvent, currentUser } = toRefs(props);
     const store = useStore();
-    const selfParticipant = computed<ISpParticipant>(
-      () => spEvent.value.participants.find((p) => p._id === currentUser.value?._id)!
+    const total = ref<ISpEvent["price"]>(spEvent.value.price);
+    const eachPayed = ref<ISpEvent["each"]>(spEvent.value.each);
+    const participantsInfo = ref<IEventPayedPayload["participants"]>(
+      spEvent.value.participants.map((p) => ({ _id: p._id, ows: p.ows, paid: p.paid, name: p.name }))
     );
+    const selfParticipant = computed(() => participantsInfo.value.find((p) => p._id === currentUser.value._id)!);
 
     const addAdditionalPayment = async (paid: ISpParticipant["paid"]): Promise<void> => {
       const participants: ISpParticipant[] = cloneDeep(spEvent.value.participants);
@@ -63,9 +68,20 @@ export default defineComponent({
       await store.dispatch("updateEvent", { data: payload, current: true });
     };
 
+    const { result } = useSubscription(EVENT_PAYED_SUBSCRIPTION);
+
+    watch(result, ({ eventPayed }: { eventPayed: IEventPayedPayload }) => {
+      total.value = eventPayed.total;
+      eachPayed.value = eventPayed.each;
+      participantsInfo.value = eventPayed.participants;
+    });
+
     return {
       addAdditionalPayment,
-      selfParticipant
+      selfParticipant,
+      total,
+      eachPayed,
+      participantsInfo
     };
   }
 });

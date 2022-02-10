@@ -5,6 +5,12 @@ export const EVENT_PAYED_SUBSCRIPTION = gql`
     eventPayed {
       total
       each
+      participants {
+        _id
+        name
+        paid
+        ows
+      }
     }
   }
 `;
