@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable class="q-pa-lg" :to="{ name: 'Event', params: { id: spEvent._id } }">
+  <q-item clickable class="q-pa-sm" @click="moveToEvent">
     <q-item-section class="text-left">
       <q-item-label class="text-subtitle1 ellipsis">{{ spEvent.name }}</q-item-label>
       <q-item-label caption> Totall: {{ spEvent.price }}. Each: {{ spEvent.each }}.</q-item-label>
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType, toRefs } from "vue";
 
 // Services
 import { mainFormat } from "@/services/dates";
@@ -22,6 +22,7 @@ import { mainFormat } from "@/services/dates";
 // Types
 import { ISpEvent } from "@/types/entities/event";
 import { ISpUser } from "@/types/entities/user";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "SpEvent",
@@ -35,11 +36,18 @@ export default defineComponent({
       default: null
     }
   },
-  setup({ spEvent, currentUser }) {
+  setup(props) {
+    const router = useRouter();
+    const { spEvent, currentUser } = toRefs(props);
     const selfPaied = computed(() => {
-      return spEvent.participants.find((p) => p._id === currentUser?._id)?.paid || 0;
+      return spEvent.value.participants.find((p) => p._id === currentUser.value?._id)?.paid || 0;
     });
-    return { selfPaied, mainFormat };
+
+    const moveToEvent = (): void => {
+      router.push({ name: "Event", params: { id: spEvent.value._id } });
+    };
+
+    return { selfPaied, mainFormat, moveToEvent };
   }
 });
 </script>

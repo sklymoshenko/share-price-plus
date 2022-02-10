@@ -8,6 +8,7 @@ declare module "@vue/runtime-core" {
   interface State {
     currentUser: ISpUser | null;
     spEvents: ISpEvent[] | null;
+    currentEvent: ISpEvent | null;
   }
 
   // provide typings for `this.$store`

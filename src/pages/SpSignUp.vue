@@ -85,7 +85,7 @@ export default defineComponent({
     const $q = useQuasar();
     const router = useRouter();
     const store = useStore();
-    const user = ref<Omit<ISpUser, "_id">>({
+    const user = ref<Pick<ISpUser, "name" | "email" | "password">>({
       name: "",
       email: "",
       password: ""
