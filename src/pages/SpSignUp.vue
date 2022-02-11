@@ -67,6 +67,7 @@ import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useStore } from "@/store/store";
+import { safeMethod } from "@/services/safeMethod";
 
 const SIGN_UP_MUTATION = gql`
   mutation register($password: String!, $email: String!, $name: String!) {
@@ -95,23 +96,16 @@ export default defineComponent({
     const { mutate: signUp, loading } = useMutation(SIGN_UP_MUTATION, { variables: user.value });
 
     const onSubmit = async () => {
-      try {
-        const {
-          data: { register }
-        } = (await signUp()) as { data: { register: ISpUser } };
+      const {
+        data: { register }
+      } = (await signUp()) as { data: { register: ISpUser } };
 
-        store.commit("setCurrentUser", register);
-        localStorage.setItem("spid", register._id);
-        router.push("/");
-      } catch (err: any) {
-        $q.notify({
-          message: err.message,
-          type: "negative"
-        });
-      }
+      store.commit("setCurrentUser", register);
+      localStorage.setItem("spid", register._id);
+      router.push("/");
     };
 
-    return { user, onSubmit, isPwd, router, loading };
+    return { user, onSubmit: () => safeMethod(onSubmit), isPwd, router, loading };
   }
 });
 </script>

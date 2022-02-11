@@ -28,6 +28,7 @@ import SpEventItem from "@/components/SpEvent/SpEventItem.vue";
 import { ISpUser } from "@/types/entities/user";
 import { ISpEvent } from "@/types/entities/event";
 import { useQuasar } from "quasar";
+import { safeMethod } from "@/services/safeMethod";
 
 export default defineComponent({
   name: "SpEvents",
@@ -36,25 +37,12 @@ export default defineComponent({
     const store = useStore();
     const currentUser = computed<ISpUser | null>(() => store.state.currentUser);
     const loadEventsToStore = async (): Promise<void> => {
-      try {
-        $q.loading.show({
-          message: "You can go read a book..."
-        });
-
-        await store.dispatch(
-          "getEvents",
-          currentUser.value?.events.map((id) => id)
-        );
-      } catch (err: any) {
-        $q.notify({
-          message: err.message,
-          type: "negative"
-        });
-      } finally {
-        $q.loading.hide();
-      }
+      await store.dispatch(
+        "getEvents",
+        currentUser.value?.events.map((id) => id)
+      );
     };
-    await loadEventsToStore();
+    await safeMethod(loadEventsToStore);
 
     const events = computed<ISpEvent[] | null>(() => store.state.spEvents);
 
