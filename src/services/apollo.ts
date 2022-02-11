@@ -17,7 +17,7 @@ const wsLink = new WebSocketLink({
   //For development
   // uri: "ws://localhost:4000/graphql",
 
-  uri: "ws://share-price-plus-server.herokuapp.com/graphql",
+  uri: "wss://share-price-plus-server.herokuapp.com/graphql",
   options: {
     reconnect: true
   }
