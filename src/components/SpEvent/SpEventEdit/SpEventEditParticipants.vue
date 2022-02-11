@@ -8,17 +8,23 @@
         <div class="sp-event-price text-body">{{ participant.ows }}</div>
       </div>
     </div>
+    <SpEventEditAddParticipants :sp-event="spEvent" @addParticipants="addParticipants" />
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, toRefs } from "vue";
+import { computed, defineComponent, PropType, ref, toRefs } from "vue";
 
 // Types
-import { IEventPayedPayload } from "@/types/entities/event";
+import { IEventPayedPayload, ISpEvent } from "@/types/entities/event";
 import { ISpParticipant } from "@/types/spPeopleConfig";
+
+// Components
+import SpEventEditAddParticipants from "./SpEventEditAddParticipants.vue";
 
 export default defineComponent({
   name: "SpEventEditParticipants",
+  components: { SpEventEditAddParticipants },
+  emits: ["addParticipants"],
   props: {
     participants: {
       type: Array as PropType<IEventPayedPayload["participants"]>,
@@ -27,15 +33,23 @@ export default defineComponent({
     selfParticipant: {
       type: Object as PropType<Omit<ISpParticipant, "exceed" | "loaners">>,
       required: true
+    },
+    spEvent: {
+      type: Object as PropType<ISpEvent>,
+      required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { participants, selfParticipant } = toRefs(props);
     const eventParticipants = computed<IEventPayedPayload["participants"]>(() =>
       participants.value.filter((p) => p._id !== selfParticipant.value._id)
     );
 
-    return { eventParticipants };
+    const addParticipants = (participants: Pick<ISpParticipant, "_id" | "name">) => {
+      emit("addParticipants", participants);
+    };
+
+    return { eventParticipants, addParticipants };
   }
 });
 </script>
