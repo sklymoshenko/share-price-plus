@@ -1,6 +1,6 @@
 import { createApp, provide } from "vue";
 import App from "./App.vue";
-import { Quasar, Notify } from "quasar";
+import { Quasar, Notify, Loading } from "quasar";
 import { router } from "@/router/router";
 import { apolloClient } from "./services/apollo";
 import { provideApolloClient } from "@vue/apollo-composable";
@@ -20,7 +20,7 @@ createApp({
   }
 })
   .use(Quasar, {
-    plugins: { Notify }, // import Quasar plugins and add here
+    plugins: { Notify, Loading }, // import Quasar plugins and add here
     config: {
       notify: {
         position: "top",
