@@ -35,7 +35,9 @@ export default defineComponent({
     const isNew = computed<boolean>(() => spEventId.value === "new");
     const currentUser = computed<ISpUser>(() => store.state.currentUser!);
 
-    await store.dispatch("getCurrentEvent", spEventId.value);
+    if (!isNew.value) {
+      await store.dispatch("getCurrentEvent", spEventId.value);
+    }
 
     const spEvent = computed((): ISpEvent | null => {
       return store.state.currentEvent;

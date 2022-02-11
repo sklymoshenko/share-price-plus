@@ -6,6 +6,9 @@
         <q-btn color="primary" icon="add" :to="{ name: 'Event', params: { id: 'new' } }" />
       </q-page-sticky>
     </div>
+    <q-card v-if="!events?.length" flat bordered class="my-card text-center empty-events">
+      <q-card-section class="text-body1"> You dont have any events </q-card-section>
+    </q-card>
     <div style="width: 100%" class="q-mt-md">
       <q-list separator>
         <SpEventItem v-for="event in events" :key="event._id" :sp-event="event" :current-user="currentUser" />
@@ -24,16 +27,35 @@ import SpEventItem from "@/components/SpEvent/SpEventItem.vue";
 // Types
 import { ISpUser } from "@/types/entities/user";
 import { ISpEvent } from "@/types/entities/event";
+import { useQuasar } from "quasar";
 
 export default defineComponent({
   name: "SpEvents",
   async setup() {
+    const $q = useQuasar();
     const store = useStore();
     const currentUser = computed<ISpUser | null>(() => store.state.currentUser);
-    await store.dispatch(
-      "getEvents",
-      currentUser.value?.events.map((id) => id)
-    );
+    const loadEventsToStore = async (): Promise<void> => {
+      try {
+        $q.loading.show({
+          message: "You can go read a book..."
+        });
+
+        await store.dispatch(
+          "getEvents",
+          currentUser.value?.events.map((id) => id)
+        );
+      } catch (err: any) {
+        $q.notify({
+          message: err.message,
+          type: "negative"
+        });
+      } finally {
+        $q.loading.hide();
+      }
+    };
+    await loadEventsToStore();
+
     const events = computed<ISpEvent[] | null>(() => store.state.spEvents);
 
     return { events, currentUser };
@@ -42,4 +64,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.empty-events {
+  margin-top: 40%;
+}
+</style>

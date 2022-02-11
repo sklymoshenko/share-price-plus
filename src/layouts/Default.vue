@@ -85,7 +85,7 @@ export default defineComponent({
 
 <style scoped>
 .default-layout-view {
-  height: 78vh;
+  height: 73vh;
   width: 80%;
   margin: 0 auto;
   touch-action: manipulation;
