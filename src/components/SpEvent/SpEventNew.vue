@@ -17,6 +17,7 @@
         :key="participant._id"
         :name="participant.name"
         :paid="participant.paid"
+        :deletable="participant._id !== currentUser._id"
         @delete="deleteParticipant(participant)"
       />
     </div>
@@ -39,18 +40,20 @@ import { defineComponent, PropType, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { apolloClient } from "@/services/apollo";
+import { useMutation } from "@vue/apollo-composable";
+import { useStore } from "@/store/store";
 import gql from "graphql-tag";
 
 // Components
 import SpPersonItem from "../SpPersonItem.vue";
 
 // Types
-import { ISpEvent, ISpEventUpload } from "@/types/entities/event";
+import { ISpEventUpload } from "@/types/entities/event";
 import { ISpParticipantUpload } from "@/types/spPeopleConfig";
 import { ISpUser } from "@/types/entities/user";
-import { useMutation } from "@vue/apollo-composable";
-import { useStore } from "@/store/store";
+import { safeMethod } from "@/services/safeMethod";
 
+// Gql
 const USERS_QUERY = gql`
   query SpUsersJson {
     spUsersJson {
@@ -100,30 +103,31 @@ export default defineComponent({
       variables: { data: spEvent.value }
     });
     const createEvent = async (): Promise<void> => {
+      await createSpEvent();
+      await store.dispatch("getUserEventsIds", currentUser._id);
+      $q.notify({
+        message: "Event created!",
+        type: "positive"
+      });
+      route.push({ name: "Events" });
+    };
+
+    const getUsers = async (): Promise<ISpUser[] | []> => {
       try {
-        await createSpEvent();
-        await store.dispatch("getUserEventsIds", currentUser._id);
-        $q.notify({
-          message: "Event created!",
-          type: "positive"
+        const {
+          data: { spUsersJson }
+        }: { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
+          query: USERS_QUERY
         });
-        route.push({ name: "Events" });
+
+        return spUsersJson;
       } catch (err: any) {
         $q.notify({
           message: err.message,
           type: "negative"
         });
+        return [];
       }
-    };
-
-    const getUsers = async (): Promise<ISpUser[]> => {
-      const {
-        data: { spUsersJson }
-      }: { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
-        query: USERS_QUERY
-      });
-
-      return spUsersJson;
     };
 
     const participants: ISpUser[] = await getUsers();
@@ -132,22 +136,14 @@ export default defineComponent({
       spEvent.value.participants = spEvent.value.participants.filter((p) => p._id !== participant._id);
     };
 
-    const simulateLoading = (): void => {
-      saveProgress.value = true;
-
-      // simulate a delay
-      setTimeout(() => {
-        // we're done, we reset loading state
-        saveProgress.value = false;
-        $q.notify({
-          message: "Event created!",
-          type: "positive"
-        });
-
-        route.push({ name: "Events" });
-      }, 3000);
+    return {
+      spEvent,
+      participants,
+      deleteParticipant,
+      createEvent: () => safeMethod(createEvent),
+      saveProgress,
+      loading
     };
-    return { spEvent, participants, deleteParticipant, createEvent, saveProgress, loading };
   }
 });
 </script>

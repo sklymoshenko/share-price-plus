@@ -47,6 +47,7 @@ import gql from "graphql-tag";
 // Types
 import { ISpUser } from "@/types/entities/user";
 import { useMutation } from "@vue/apollo-composable";
+import { safeMethod } from "@/services/safeMethod";
 
 const SIGN_IN_MUTATION = gql`
   mutation login($password: String!, $email: String!) {
@@ -69,29 +70,22 @@ export default defineComponent({
 
     const isPwd = ref<boolean>(true);
     const user = ref<Pick<ISpUser, "email" | "password">>({
-      email: "test@test.com",
-      password: "1234"
+      email: "",
+      password: ""
     });
 
     const { mutate: signIn, loading } = useMutation(SIGN_IN_MUTATION, { variables: user.value });
 
     const onSubmit = async () => {
-      try {
-        const {
-          data: { login }
-        } = (await signIn()) as { data: { login: ISpUser } };
-        store.commit("setCurrentUser", login);
-        localStorage.setItem("spid", login._id);
-        router.push("/");
-      } catch (err: any) {
-        $q.notify({
-          message: err.message,
-          type: "negative"
-        });
-      }
+      const {
+        data: { login }
+      } = (await signIn()) as { data: { login: ISpUser } };
+      store.commit("setCurrentUser", login);
+      localStorage.setItem("spid", login._id);
+      router.push("/");
     };
 
-    return { user, onSubmit, isPwd, loading };
+    return { user, onSubmit: () => safeMethod(onSubmit), isPwd, loading };
   }
 });
 </script>
