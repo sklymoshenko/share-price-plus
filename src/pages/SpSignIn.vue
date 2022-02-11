@@ -81,6 +81,7 @@ export default defineComponent({
           data: { login }
         } = (await signIn()) as { data: { login: ISpUser } };
         store.commit("setCurrentUser", login);
+        localStorage.setItem("spid", login._id);
         router.push("/");
       } catch (err: any) {
         $q.notify({
