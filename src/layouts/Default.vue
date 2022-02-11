@@ -13,6 +13,7 @@
             icon="keyboard_arrow_up"
             direction="up"
             color="secondary"
+            label-class="bg-grey-3 text-grey-8"
             v-touch-pan.prevent.mouse="moveFab"
             :disable="draggingFab"
           >
@@ -23,6 +24,7 @@
               external-label
               :label="action.name"
               label-position="left"
+              label-class="bg-grey-3 text-black"
               :icon="icons[i]"
               :to="action.to"
             />
