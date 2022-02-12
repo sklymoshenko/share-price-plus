@@ -8,7 +8,7 @@ import { apolloClient } from "@/services/apollo";
 // Queries
 import { EVENTS_QUERY } from "@/gql/queries/spEvents";
 import { CURRENT_USER } from "@/gql/queries/spCurrentUser";
-import { USER_QUERY } from "@/gql/queries/spUser";
+import { USERS_QUERY } from "@/gql/queries/spUser";
 import { UPDATE_EVENT } from "@/gql/mutations/updateEvent";
 
 export interface State {
@@ -37,6 +37,26 @@ export const store = createStore<State>({
     }
   },
   actions: {
+    async getCurrentUser({ commit }): Promise<void> {
+      const {
+        data: { currentUser }
+      }: { data: { currentUser: ISpUser } } = await apolloClient.query({
+        query: CURRENT_USER
+      });
+
+      commit("setCurrentUser", currentUser);
+    },
+    async getCurrentEvent({ commit }, id: ISpEvent["_id"]): Promise<void> {
+      if (!id) return;
+      const {
+        data: { spEvents }
+      }: { data: { spEvents: ISpEvent[] } } = await apolloClient.query({
+        query: EVENTS_QUERY,
+        variables: { idIn: [id] }
+      });
+
+      commit("setCurrentEvent", spEvents[0]);
+    },
     async getEvents({ commit }, eventsIds: ISpEvent["_id"][]): Promise<void> {
       const {
         data: { spEvents }
@@ -48,20 +68,12 @@ export const store = createStore<State>({
       });
       commit("setEvents", spEvents);
     },
-    async getCurrentUser({ commit }): Promise<void> {
-      const {
-        data: { currentUser }
-      }: { data: { currentUser: ISpUser } } = await apolloClient.query({
-        query: CURRENT_USER
-      });
-      commit("setCurrentUser", currentUser);
-    },
     async getUserEventsIds({ state, commit }, id: ISpUser["_id"]): Promise<void> {
       if (!id) return;
       const {
         data: { spUsers }
       }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
-        query: USER_QUERY
+        query: USERS_QUERY
       });
 
       if (id === state.currentUser?._id) {
@@ -77,17 +89,6 @@ export const store = createStore<State>({
       if (current) {
         commit("setCurrentEvent", result?.data?.updateEvent);
       }
-    },
-    async getCurrentEvent({ commit }, id: ISpEvent["_id"]): Promise<void> {
-      if (!id) return;
-      const {
-        data: { spEvents }
-      }: { data: { spEvents: ISpEvent[] } } = await apolloClient.query({
-        query: EVENTS_QUERY,
-        variables: { idIn: [id] }
-      });
-
-      commit("setCurrentEvent", spEvents[0]);
     }
   }
 });

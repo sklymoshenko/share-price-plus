@@ -39,15 +39,7 @@ import { ISpEvent } from "@/types/entities/event";
 import { ISpUser } from "@/types/entities/user";
 
 import { ISpParticipant } from "@/types/spPeopleConfig";
-
-const USERS_QUERY = gql`
-  query SpUsersJson {
-    spUsersJson {
-      _id
-      name
-    }
-  }
-`;
+import { USERS_QUERY } from "@/gql/queries/spUser";
 
 export default defineComponent({
   name: "SpEventEditAddParticipant",
@@ -56,10 +48,14 @@ export default defineComponent({
     spEvent: {
       type: Object as PropType<ISpEvent>,
       required: true
+    },
+    currentUser: {
+      type: Object as PropType<ISpUser>,
+      required: true
     }
   },
   async setup(props, { emit }) {
-    const { spEvent } = toRefs(props);
+    const { spEvent, currentUser } = toRefs(props);
     const participants = ref<Pick<ISpParticipant, "_id" | "name">[]>([]);
     const existingParticipantsIds = computed(() => spEvent.value.participants.map((p) => p._id));
 
@@ -67,11 +63,13 @@ export default defineComponent({
       const {
         data: { spUsersJson }
       }: { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
-        query: USERS_QUERY
+        query: USERS_QUERY,
+        variables: {
+          idIn: currentUser.value.friends.filter((u) => !existingParticipantsIds.value.includes(u))
+        }
       });
 
-      const users = spUsersJson.filter((u) => !existingParticipantsIds.value.includes(u._id));
-      return users;
+      return spUsersJson;
     };
 
     const users = await getUsers();

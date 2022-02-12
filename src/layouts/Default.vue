@@ -52,7 +52,7 @@ export default defineComponent({
     const fabPos = ref([18, 18]);
     const draggingFab = ref<boolean>(false);
     const title: string = "Share Price Plus+";
-    const icons: string[] = ["home", "bar_chart", "person", "article"];
+    const icons: string[] = ["home", "bar_chart", "person", "article", "add_reaction"];
     const routeOmit = computed(() => {
       const routeName = route.name || "";
       return !["SignIn", "SignUp"].includes(String(routeName));

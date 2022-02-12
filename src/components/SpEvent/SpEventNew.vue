@@ -30,7 +30,7 @@
       class="q-mt-lg"
       :loading="saveProgress"
       @click="createEvent"
-      :disable="spEvent.name === '' || !spEvent.participants.length"
+      :disable="spEvent.name === '' || !spEvent.participants?.length"
     />
   </div>
 </template>
@@ -52,17 +52,9 @@ import { ISpEventUpload } from "@/types/entities/event";
 import { ISpParticipantUpload } from "@/types/spPeopleConfig";
 import { ISpUser } from "@/types/entities/user";
 import { safeMethod } from "@/services/safeMethod";
+import { USERS_QUERY } from "@/gql/queries/spUser";
 
 // Gql
-const USERS_QUERY = gql`
-  query SpUsersJson {
-    spUsersJson {
-      _id
-      name
-    }
-  }
-`;
-
 const CREATE_EVENT_MUTATION = gql`
   mutation CreateEvent($data: CreateEvent!) {
     createEvent(data: $data) {
@@ -102,6 +94,7 @@ export default defineComponent({
     const { mutate: createSpEvent, loading } = useMutation(CREATE_EVENT_MUTATION, {
       variables: { data: spEvent.value }
     });
+
     const createEvent = async (): Promise<void> => {
       await createSpEvent();
       await store.dispatch("getUserEventsIds", currentUser._id);
@@ -115,12 +108,15 @@ export default defineComponent({
     const getUsers = async (): Promise<ISpUser[] | []> => {
       try {
         const {
-          data: { spUsersJson }
-        }: { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
-          query: USERS_QUERY
+          data: { spUsers }
+        }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
+          query: USERS_QUERY,
+          variables: {
+            idIn: currentUser.friends
+          }
         });
 
-        return spUsersJson;
+        return spUsers;
       } catch (err: any) {
         $q.notify({
           message: err.message,
@@ -133,7 +129,7 @@ export default defineComponent({
     const participants: ISpUser[] = await getUsers();
 
     const deleteParticipant = (participant: ISpParticipantUpload | ISpUser) => {
-      spEvent.value.participants = spEvent.value.participants.filter((p) => p._id !== participant._id);
+      spEvent.value.participants = spEvent.value.participants?.filter((p) => p._id !== participant._id);
     };
 
     return {

@@ -5,4 +5,5 @@ export interface ISpUser {
   password?: string;
   eventsCount?: number;
   events: string[];
+  friends: string[];
 }
