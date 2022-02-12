@@ -23,10 +23,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType, ref, toRefs } from "vue";
 
 // Types
 import { ISpParticipant } from "../types/spPeopleConfig";
+
+// Services
+import { calculateResults } from "@/services/calculations";
+
+// lodash
+// @ts-ignore
+import cloneDeep from "lodash/cloneDeep";
 
 export default defineComponent({
   name: "SpResultsPreview",
@@ -45,12 +52,17 @@ export default defineComponent({
       default: true
     }
   },
-  setup({ participants }) {
+  setup(props) {
+    const { participants, price } = toRefs(props);
+
+    const participantsCopy = ref(cloneDeep(participants.value));
+    calculateResults(participantsCopy.value, price.value);
+
     const preview = computed(() => {
-      return participants.map((conf) => {
+      return participantsCopy.value.map((conf) => {
         const returnsArray = conf.loaners
           .map((loaner) => {
-            const name = participants.find((pc) => pc._id === loaner._id)?.name;
+            const name = participantsCopy.value.find((pc) => pc._id === loaner._id)?.name;
             if (!name) return;
 
             return { label: `Returns to ${name}: ${loaner.paid}` };

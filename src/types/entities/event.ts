@@ -13,7 +13,7 @@ export interface ISpEvent {
 }
 
 export interface ISpEventUpload {
-  participants: ISpParticipantUpload[];
+  participants?: ISpParticipantUpload[];
   name?: string;
   price?: number;
   each?: number;

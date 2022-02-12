@@ -13,6 +13,9 @@
     :sp-event="spEvent"
     @addParticipants="addParticipants"
   />
+  <div class="sp-event-edit__close flex q-mt-lg">
+    <q-btn outline color="primary" label="Close And Calculate" @click="closeEvent" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -50,7 +53,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { spEvent, currentUser } = toRefs(props);
     const store = useStore();
     const total = ref<ISpEvent["price"]>(spEvent.value.price);
@@ -94,13 +97,26 @@ export default defineComponent({
       await store.dispatch("updateEvent", { data: payload, current: true });
     };
 
+    const closeEvent = async () => {
+      const payload: { updateEventId: ISpEvent["_id"]; data: ISpEventUpload } = {
+        updateEventId: spEvent.value._id,
+        data: {
+          isClosed: true,
+          closedAt: new Date().toISOString()
+        }
+      };
+
+      await store.dispatch("updateEvent", { data: payload, current: true });
+    };
+
     return {
       addAdditionalPayment,
       selfParticipant,
       total,
       eachPayed,
       participantsInfo,
-      addParticipants
+      addParticipants,
+      closeEvent
     };
   }
 });
