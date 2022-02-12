@@ -6,18 +6,18 @@ const httpLink = new HttpLink({
   // You should use an absolute URL here
 
   // For development
-  // uri: "http://localhost:4000/graphql",
+  uri: "http://localhost:4000/graphql",
 
-  uri: "https://share-price-plus-server.herokuapp.com/graphql",
+  // uri: "https://share-price-plus-server.herokuapp.com/graphql",
   credentials: "include"
 });
 
 // Create the subscription websocket link
 const wsLink = new WebSocketLink({
   //For development
-  // uri: "ws://localhost:4000/graphql",
+  uri: "ws://localhost:4000/graphql",
 
-  uri: "wss://share-price-plus-server.herokuapp.com/graphql",
+  // uri: "wss://share-price-plus-server.herokuapp.com/graphql",
   options: {
     reconnect: true
   }
@@ -39,6 +39,16 @@ const link = split(
 export const apolloClient = new ApolloClient({
   link,
   cache: new InMemoryCache({ addTypename: false }),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: "no-cache",
+      errorPolicy: "ignore"
+    },
+    query: {
+      fetchPolicy: "no-cache",
+      errorPolicy: "all"
+    }
+  },
   connectToDevTools: true,
   credentials: "include"
 });

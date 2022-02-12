@@ -27,28 +27,24 @@ import SpEventItem from "@/components/SpEvent/SpEventItem.vue";
 // Types
 import { ISpUser } from "@/types/entities/user";
 import { ISpEvent } from "@/types/entities/event";
-import { useQuasar } from "quasar";
 import { safeMethod } from "@/services/safeMethod";
 
 export default defineComponent({
   name: "SpEvents",
+  components: { SpEventItem },
   async setup() {
-    const $q = useQuasar();
     const store = useStore();
     const currentUser = computed<ISpUser | null>(() => store.state.currentUser);
     const loadEventsToStore = async (): Promise<void> => {
-      await store.dispatch(
-        "getEvents",
-        currentUser.value?.events.map((id) => id)
-      );
+      await store.dispatch("getEvents", currentUser.value?.events.map((id) => id) || []);
     };
+
     await safeMethod(loadEventsToStore);
 
     const events = computed<ISpEvent[] | null>(() => store.state.spEvents);
 
     return { events, currentUser };
-  },
-  components: { SpEventItem }
+  }
 });
 </script>
 

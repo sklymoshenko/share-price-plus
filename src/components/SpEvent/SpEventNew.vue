@@ -1,7 +1,14 @@
 <template>
   <div class="new column">
     <div class="text-h6 text-left q-mb-md">New Event</div>
-    <q-input v-model="spEvent.name" filled clearable hint="Event Name" placeholder="'New Year'" />
+    <q-input
+      v-model="spEvent.name"
+      filled
+      clearable
+      hint="Event Name*"
+      placeholder="'New Year'"
+      :rules="[(val) => (val !== null && val !== '') || 'Enter a event name!']"
+    />
     <q-select
       v-model="spEvent.participants"
       option-label="name"
@@ -9,7 +16,7 @@
       filled
       multiple
       :options="participants"
-      hint="Participans"
+      hint="Participans*"
     />
     <div class="persons q-mt-lg row justify-right overflow-auto" style="max-height: 220px">
       <SpPersonItem
@@ -30,7 +37,6 @@
       class="q-mt-lg"
       :loading="saveProgress"
       @click="createEvent"
-      :disable="spEvent.name === '' || !spEvent.participants?.length"
     />
   </div>
 </template>
@@ -51,8 +57,9 @@ import SpPersonItem from "../SpPersonItem.vue";
 import { ISpEventUpload } from "@/types/entities/event";
 import { ISpParticipantUpload } from "@/types/spPeopleConfig";
 import { ISpUser } from "@/types/entities/user";
+
+// Services
 import { safeMethod } from "@/services/safeMethod";
-import { USERS_QUERY } from "@/gql/queries/spUser";
 
 // Gql
 const CREATE_EVENT_MUTATION = gql`
@@ -67,6 +74,15 @@ const CREATE_EVENT_MUTATION = gql`
       closedAt
       createdAt
       updatedAt
+    }
+  }
+`;
+
+export const USERS_QUERY = gql`
+  query SpUsers($idIn: [ID!], $spUsersId: String) {
+    spUsers(_id_in: $idIn, id: $spUsersId) {
+      _id
+      name
     }
   }
 `;
@@ -86,6 +102,8 @@ export default defineComponent({
     const route = useRouter();
     const store = useStore();
 
+    const participants = ref<Pick<ISpUser, "_id" | "name">[]>([]);
+
     const spEvent = ref<ISpEventUpload>({
       name: "",
       participants: [{ _id: currentUser._id, paid: 0, name: currentUser.name }]
@@ -96,6 +114,14 @@ export default defineComponent({
     });
 
     const createEvent = async (): Promise<void> => {
+      if (!spEvent.value.name) {
+        throw Error("Enter a event name");
+      }
+
+      if (spEvent.value.participants?.length === 1) {
+        throw new Error("You need to share with someone! Add participants.");
+      }
+
       await createSpEvent();
       await store.dispatch("getUserEventsIds", currentUser._id);
       $q.notify({
@@ -105,28 +131,27 @@ export default defineComponent({
       route.push({ name: "Events" });
     };
 
-    const getUsers = async (): Promise<ISpUser[] | []> => {
+    const getUsers = async (): Promise<void> => {
       try {
         const {
           data: { spUsers }
         }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
           query: USERS_QUERY,
           variables: {
-            idIn: currentUser.friends
+            idIn: currentUser.friends || []
           }
         });
 
-        return spUsers;
+        participants.value = spUsers;
       } catch (err: any) {
         $q.notify({
           message: err.message,
           type: "negative"
         });
-        return [];
       }
     };
 
-    const participants: ISpUser[] = await getUsers();
+    await safeMethod(getUsers);
 
     const deleteParticipant = (participant: ISpParticipantUpload | ISpUser) => {
       spEvent.value.participants = spEvent.value.participants?.filter((p) => p._id !== participant._id);

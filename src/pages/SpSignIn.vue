@@ -57,6 +57,7 @@ const SIGN_IN_MUTATION = gql`
       events
       eventsCount
       email
+      friends
     }
   }
 `;

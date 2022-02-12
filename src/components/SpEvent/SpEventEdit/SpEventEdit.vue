@@ -40,6 +40,8 @@ import cloneDeep from "lodash/cloneDeep";
 // Gql
 import { useSubscription } from "@vue/apollo-composable";
 import { EVENT_PAYED_SUBSCRIPTION } from "@/gql/subscriptions/eventPayed";
+import { useQuasar } from "quasar";
+import { safeMethod } from "@/services/safeMethod";
 
 export default defineComponent({
   name: "SpEventEdit",
@@ -56,6 +58,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { spEvent, currentUser } = toRefs(props);
+    const $q = useQuasar();
     const store = useStore();
     const total = ref<ISpEvent["price"]>(spEvent.value.price);
     const eachPayed = ref<ISpEvent["each"]>(spEvent.value.each);
@@ -98,7 +101,22 @@ export default defineComponent({
       await store.dispatch("updateEvent", { data: payload, current: true });
     };
 
-    const closeEvent = async () => {
+    const closeEvent = () => {
+      $q.dialog({
+        title: "Confirm",
+        message: "Would you like to close event? You won't be able to add expenses anymore!",
+        cancel: true,
+        persistent: true
+      })
+        .onOk(async () => {
+          await safeMethod(closeEventConfirmed);
+        })
+        .onCancel(() => {
+          return;
+        });
+    };
+
+    const closeEventConfirmed = async () => {
       const payload: { updateEventId: ISpEvent["_id"]; data: ISpEventUpload } = {
         updateEventId: spEvent.value._id,
         data: {

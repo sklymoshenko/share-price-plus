@@ -76,6 +76,7 @@ const SIGN_UP_MUTATION = gql`
       name
       events
       email
+      friends
     }
   }
 `;

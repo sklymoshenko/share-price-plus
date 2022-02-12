@@ -48,6 +48,7 @@ export const store = createStore<State>({
     },
     async getCurrentEvent({ commit }, id: ISpEvent["_id"]): Promise<void> {
       if (!id) return;
+
       const {
         data: { spEvents }
       }: { data: { spEvents: ISpEvent[] } } = await apolloClient.query({
