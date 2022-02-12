@@ -15,10 +15,11 @@
         <div class="text-subtitle1">Totall events: {{ person.eventsCount }}</div>
       </q-card-section>
 
-      <q-card-section class="row justify-between">
+      <!-- Todo: User Edit -->
+      <!-- <q-card-section class="row justify-between">
         <q-btn color="primary" :label="editBtnLabel" @click="isEditMode = !isEditMode" />
         <q-btn v-if="isEditMode" color="secondary" label="Save" @click="saveUserInfo" :loading="saveProgress" />
-      </q-card-section>
+      </q-card-section> -->
     </q-card>
   </div>
 </template>

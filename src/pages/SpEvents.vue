@@ -2,7 +2,7 @@
   <div>
     <div class="events-bar row justify-between">
       <div class="text-h6 text-left">Events</div>
-      <q-page-sticky position="top-right" :offset="[50, 0]">
+      <q-page-sticky position="top-right" :offset="[30, 0]">
         <q-btn color="primary" icon="add" :to="{ name: 'Event', params: { id: 'new' } }" />
       </q-page-sticky>
     </div>
