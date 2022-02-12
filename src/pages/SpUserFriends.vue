@@ -6,10 +6,10 @@
     </div>
     <div class="row items-center justify-between">
       <div class="col-8">
-        <q-input v-model="friend" filled dense clearable hint="Email" class="q-mt-md" />
+        <q-input v-model="friend" filled dense hint="Email" class="q-mt-md" />
       </div>
       <div class="col-3 q-mb-xs">
-        <q-btn color="primary" icon="add" @click="addUserFriend" />
+        <q-btn color="primary" icon="add" @click="addUserFriend" :disable="!friend.length" />
       </div>
     </div>
     <div class="persons q-mt-lg row justify-right" style="max-height: 220px">
@@ -42,24 +42,35 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const currentUser = computed(() => store.state.currentUser!);
-
     const friend = ref<ISpUser["email"]>("");
+
+    const friends = ref<ISpUser[]>([]);
     const getFriends = async () => {
       const {
         data: { spUsers }
       }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
         query: USERS_QUERY,
         variables: {
-          idIn: currentUser.value.friends
+          idIn: currentUser.value.friends || []
         }
       });
 
-      return spUsers;
+      friends.value = spUsers;
     };
 
-    const friends = ref(await getFriends());
+    await safeMethod(getFriends);
 
     const addUserFriend = async () => {
+      if (friend.value === currentUser.value.email) {
+        throw new Error("You are already friend to yourself!");
+      }
+
+      const existingFriendName = friends.value.find((f) => f.email === friend.value)?.name;
+
+      if (!!existingFriendName) {
+        throw new Error(`${existingFriendName} is already your friend`);
+      }
+
       const result: { data?: { addFriend: ISpUser } | null | undefined } = await apolloClient.mutate({
         mutation: ADD_FRIEND_MUTATION,
         variables: {

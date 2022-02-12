@@ -39,7 +39,10 @@
             :type="isPwd ? 'password' : 'text'"
             lazy-rules
             clearable
-            :rules="[(val) => (val !== null && val !== '') || 'Please write your password']"
+            :rules="[
+              (val) => (val !== null && val !== '') || 'Please write your password',
+              (val) => val.length >= 4 || 'Password should be at least 4 characters'
+            ]"
           >
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
@@ -76,6 +79,7 @@ const SIGN_UP_MUTATION = gql`
       name
       events
       email
+      friends
     }
   }
 `;

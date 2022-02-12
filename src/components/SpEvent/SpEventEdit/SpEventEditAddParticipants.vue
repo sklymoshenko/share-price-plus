@@ -40,6 +40,7 @@ import { ISpUser } from "@/types/entities/user";
 
 import { ISpParticipant } from "@/types/spPeopleConfig";
 import { USERS_QUERY } from "@/gql/queries/spUser";
+import { safeMethod } from "@/services/safeMethod";
 
 export default defineComponent({
   name: "SpEventEditAddParticipant",
@@ -58,22 +59,24 @@ export default defineComponent({
     const { spEvent, currentUser } = toRefs(props);
     const participants = ref<Pick<ISpParticipant, "_id" | "name">[]>([]);
     const existingParticipantsIds = computed(() => spEvent.value.participants.map((p) => p._id));
-
-    const getUsers = async (): Promise<ISpUser[]> => {
+    const users = ref<ISpUser[]>([]);
+    const getUsers = async (): Promise<void> => {
       const {
-        data: { spUsersJson }
-      }: { data: { spUsersJson: ISpUser[] } } = await apolloClient.query({
+        data: { spUsers }
+      }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
         query: USERS_QUERY,
         variables: {
           idIn: currentUser.value.friends.filter((u) => !existingParticipantsIds.value.includes(u))
         }
       });
 
-      return spUsersJson;
+      users.value = spUsers;
     };
 
-    const users = await getUsers();
-    const possibleParticipants = computed(() => users.filter((u) => !existingParticipantsIds.value.includes(u._id)));
+    await safeMethod(getUsers);
+    const possibleParticipants = computed(() =>
+      users.value.filter((u) => !existingParticipantsIds.value.includes(u._id))
+    );
 
     const addParticipants = () => {
       emit("addParticipants", participants.value);
