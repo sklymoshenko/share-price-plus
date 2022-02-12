@@ -2,7 +2,7 @@
   <div class="q-mr-sm">
     <q-chip class="flex align-center">
       <q-avatar @click="$emit('click')">
-        <img src="../../avatar.png" />
+        <img :src="avatar" />
       </q-avatar>
       <span>
         {{ name }} | <b v-if="paid">{{ paid }} </b>
@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import avatar from "../assets/avatar.png";
 
 export default defineComponent({
   name: "SpPersonItem",
@@ -31,7 +32,7 @@ export default defineComponent({
     }
   },
   setup() {
-    return {};
+    return { avatar };
   }
 });
 </script>
