@@ -8,6 +8,7 @@
     @addAdditionalPayment="addAdditionalPayment"
   />
   <SpEventEditParticipants
+    :currentUser="currentUser"
     :participants="participantsInfo"
     :selfParticipant="selfParticipant"
     :sp-event="spEvent"

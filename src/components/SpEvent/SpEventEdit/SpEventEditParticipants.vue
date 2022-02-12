@@ -8,7 +8,7 @@
         <div class="sp-event-price text-body">{{ participant.ows }}</div>
       </div>
     </div>
-    <SpEventEditAddParticipants :sp-event="spEvent" @addParticipants="addParticipants" />
+    <SpEventEditAddParticipants :sp-event="spEvent" @addParticipants="addParticipants" :current-user="currentUser" />
   </div>
 </template>
 <script lang="ts">
@@ -20,6 +20,7 @@ import { ISpParticipant } from "@/types/spPeopleConfig";
 
 // Components
 import SpEventEditAddParticipants from "./SpEventEditAddParticipants.vue";
+import { ISpUser } from "@/types/entities/user";
 
 export default defineComponent({
   name: "SpEventEditParticipants",
@@ -36,6 +37,10 @@ export default defineComponent({
     },
     spEvent: {
       type: Object as PropType<ISpEvent>,
+      required: true
+    },
+    currentUser: {
+      type: Object as PropType<ISpUser>,
       required: true
     }
   },

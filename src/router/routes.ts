@@ -6,6 +6,7 @@ import Default from "@/layouts/Default.vue";
 // Pages
 import SpMain from "@/pages/SpMain.vue";
 import SpUser from "@/pages/SpUser.vue";
+import SpUserFriends from "@/pages/SpUserFriends.vue";
 import SpEvents from "@/pages/SpEvents.vue";
 import SpEvent from "@/pages/SpEvent.vue";
 import SpHome from "@/pages/SpHome.vue";
@@ -52,6 +53,11 @@ export const routes: RouterOptions["routes"] = [
         path: "event/:id",
         name: "Event",
         component: SpEvent
+      },
+      {
+        path: "user/friends",
+        name: "Friends",
+        component: SpUserFriends
       }
     ]
   }

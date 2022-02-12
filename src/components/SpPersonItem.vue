@@ -2,10 +2,10 @@
   <div class="q-mr-sm">
     <q-chip class="flex align-center">
       <q-avatar @click="$emit('click')">
-        <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+        <img src="../../avatar.png" />
       </q-avatar>
       <span>
-        {{ name }} | <b>{{ paid }} </b>
+        {{ name }} | <b v-if="paid">{{ paid }} </b>
       </span>
       <q-icon v-if="deletable" name="delete" color="red" class="q-ml-xs" @click="$emit('delete')" />
     </q-chip>
