@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable class="q-pa-sm" @click="moveToEvent">
+  <q-item clickable class="q-pa-sm" :class="`${isClosed}`" @click="moveToEvent">
     <q-item-section class="text-left">
       <q-item-label class="text-subtitle1 ellipsis">{{ spEvent.name }}</q-item-label>
       <q-item-label caption> Totall: {{ spEvent.price }}. Each: {{ spEvent.each }}.</q-item-label>
@@ -39,6 +39,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const { spEvent, currentUser } = toRefs(props);
+    const isClosed = computed(() => (spEvent.value.isClosed ? "closed-event" : ""));
     const selfPaied = computed(() => {
       return spEvent.value.participants.find((p) => p._id === currentUser.value?._id)?.paid || 0;
     });
@@ -47,9 +48,13 @@ export default defineComponent({
       router.push({ name: "Event", params: { id: spEvent.value._id } });
     };
 
-    return { selfPaied, mainFormat, moveToEvent };
+    return { selfPaied, mainFormat, moveToEvent, isClosed };
   }
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.closed-event {
+  background-color: #fbf5f5;
+}
+</style>
