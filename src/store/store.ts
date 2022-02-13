@@ -10,6 +10,7 @@ import { EVENTS_QUERY } from "@/gql/queries/spEvents";
 import { CURRENT_USER } from "@/gql/queries/spCurrentUser";
 import { USERS_QUERY } from "@/gql/queries/spUser";
 import { UPDATE_EVENT } from "@/gql/mutations/updateEvent";
+import { getUsers } from "@/services/queries";
 
 export interface State {
   currentUser: ISpUser | null;
@@ -71,14 +72,10 @@ export const store = createStore<State>({
     },
     async getUserEventsIds({ state, commit }, id: ISpUser["_id"]): Promise<void> {
       if (!id) return;
-      const {
-        data: { spUsers }
-      }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
-        query: USERS_QUERY
-      });
+      const users = await getUsers();
 
       if (id === state.currentUser?._id) {
-        commit("setCurrentUser", { ...state.currentUser, events: spUsers[0].events });
+        commit("setCurrentUser", { ...state.currentUser, events: users[0].events });
       }
     },
     async updateEvent({ commit }, { data, current = false }: { data: ISpEventUpload; current: boolean }) {

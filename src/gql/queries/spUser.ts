@@ -1,8 +1,15 @@
 import gql from "graphql-tag";
 
 export const USERS_QUERY = gql`
-  query SpUsers($idIn: [ID!], $spUsersId: String) {
-    spUsers(_id_in: $idIn, id: $spUsersId) {
+  query SpUsers(
+    $name: String
+    $spUsersId: String
+    $idIn: [ID!]
+    $email: String
+    $createdAt: String
+    $updatedAt: String
+  ) {
+    spUsers(name: $name, id: $spUsersId, _id_in: $idIn, email: $email, createdAt: $createdAt, updatedAt: $updatedAt) {
       _id
       name
       email

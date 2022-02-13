@@ -6,7 +6,24 @@
     </div>
     <div class="row items-center justify-between">
       <div class="col-8">
-        <q-input v-model="friend" filled dense hint="Email" class="q-mt-md" />
+        <q-select
+          v-model="friend"
+          filled
+          dense
+          use-input
+          input-debounce="500"
+          hint="Friend name*"
+          class="q-mt-md"
+          option-label="name"
+          :options="optionalFriends"
+          @filter="filterFriends"
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"> No results </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
       </div>
       <div class="col-3 q-mb-xs">
         <q-btn color="primary" icon="add" @click="addUserFriend" :disable="!friend.length" />
@@ -24,7 +41,6 @@ import { useStore } from "@/store/store";
 
 // Gql
 import { ADD_FRIEND_MUTATION } from "@/gql/mutations/addFriend";
-import { USERS_QUERY } from "@/gql/queries/spUser";
 
 // Services
 import { apolloClient } from "@/services/apollo";
@@ -35,6 +51,7 @@ import { ISpUser } from "@/types/entities/user";
 
 // Components
 import SpPersonItem from "@/components/SpPersonItem.vue";
+import { getUsers } from "@/services/queries";
 
 export default defineComponent({
   name: "SpUserFriends",
@@ -42,30 +59,20 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const currentUser = computed(() => store.state.currentUser!);
-    const friend = ref<ISpUser["email"]>("");
 
     const friends = ref<ISpUser[]>([]);
     const getFriends = async () => {
-      const {
-        data: { spUsers }
-      }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
-        query: USERS_QUERY,
-        variables: {
-          idIn: currentUser.value.friends || []
-        }
-      });
-
-      friends.value = spUsers;
+      friends.value = await getUsers({ options: { idIn: currentUser.value.friends || [] } });
     };
-
     await safeMethod(getFriends);
 
+    const friend = ref<ISpUser["name"]>("");
     const addUserFriend = async () => {
-      if (friend.value === currentUser.value.email) {
+      if (friend.value === currentUser.value.name) {
         throw new Error("You are already friend to yourself!");
       }
 
-      const existingFriendName = friends.value.find((f) => f.email === friend.value)?.name;
+      const existingFriendName = friends.value.find((f) => f.name === friend.value)?.name;
 
       if (!!existingFriendName) {
         throw new Error(`${existingFriendName} is already your friend`);
@@ -75,7 +82,7 @@ export default defineComponent({
         mutation: ADD_FRIEND_MUTATION,
         variables: {
           userId: currentUser.value?._id,
-          email: friend.value
+          name: friend.value
         }
       });
 
@@ -84,7 +91,29 @@ export default defineComponent({
       }
     };
 
-    return { friend, addUserFriend: () => safeMethod(addUserFriend), friends, currentUser };
+    const optionalFriends = ref<ISpUser[]>([]);
+    const filterFriends = async (val: string, update: Function, abort: Function) => {
+      update(async () => {
+        if (val === "") {
+          optionalFriends.value = [];
+        } else {
+          const needle = val.toLowerCase();
+          const users = await getUsers({ options: { name: needle } });
+          optionalFriends.value = users.filter(
+            (u) => ![currentUser.value._id, ...currentUser.value.friends].includes(u._id)
+          );
+        }
+      });
+    };
+
+    return {
+      friend,
+      addUserFriend: () => safeMethod(addUserFriend),
+      friends,
+      currentUser,
+      optionalFriends,
+      filterFriends
+    };
   }
 });
 </script>
