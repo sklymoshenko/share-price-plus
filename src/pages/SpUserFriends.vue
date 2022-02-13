@@ -88,6 +88,7 @@ export default defineComponent({
 
       if (result.data?.addFriend) {
         friends.value.push(result.data?.addFriend);
+        friend.value = "";
       }
     };
 
