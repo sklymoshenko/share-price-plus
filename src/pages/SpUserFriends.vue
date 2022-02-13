@@ -7,17 +7,21 @@
     <div class="row items-center justify-between">
       <div class="col-8">
         <q-select
-          v-model="friend"
+          :model-value="friend"
           filled
           dense
           use-input
-          input-debounce="500"
+          hide-selected
+          fill-input
+          input-debounce="700"
           hint="Friend name*"
           class="q-mt-md"
           option-label="name"
+          options-value="name"
           behavior="menu"
           :options="optionalFriends"
           @filter="filterFriends"
+          @input-value="setFriendSearch"
         >
           <template v-slot:no-option>
             <q-item>
@@ -27,7 +31,7 @@
         </q-select>
       </div>
       <div class="col-3 q-mb-xs">
-        <q-btn color="primary" icon="add" @click="addUserFriend" :disable="!friend?.length" />
+        <q-btn color="primary" icon="add" @click="addUserFriend" :disable="!friend" />
       </div>
     </div>
     <div class="persons q-mt-lg row justify-right" style="max-height: 220px">
@@ -53,6 +57,7 @@ import { ISpUser } from "@/types/entities/user";
 // Components
 import SpPersonItem from "@/components/SpPersonItem.vue";
 import { getUsers } from "@/services/queries";
+import { useQuasar } from "quasar";
 
 export default defineComponent({
   name: "SpUserFriends",
@@ -60,6 +65,7 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const currentUser = computed(() => store.state.currentUser!);
+    const $q = useQuasar();
 
     const friends = ref<ISpUser[]>([]);
     const getFriends = async () => {
@@ -91,6 +97,11 @@ export default defineComponent({
         friends.value.push(result.data?.addFriend);
         friend.value = "";
       }
+
+      $q.notify({
+        message: "Friend successfully added!",
+        type: "positive"
+      });
     };
 
     const optionalFriends = ref<ISpUser[]>([]);
@@ -108,13 +119,18 @@ export default defineComponent({
       });
     };
 
+    const setFriendSearch = (val: string) => {
+      friend.value = val;
+    };
+
     return {
       friend,
       addUserFriend: () => safeMethod(addUserFriend),
       friends,
       currentUser,
       optionalFriends,
-      filterFriends
+      filterFriends,
+      setFriendSearch
     };
   }
 });
