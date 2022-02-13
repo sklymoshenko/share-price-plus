@@ -26,7 +26,7 @@
         </q-select>
       </div>
       <div class="col-3 q-mb-xs">
-        <q-btn color="primary" icon="add" @click="addUserFriend" :disable="!friend.length" />
+        <q-btn color="primary" icon="add" @click="addUserFriend" :disable="!friend?.length" />
       </div>
     </div>
     <div class="persons q-mt-lg row justify-right" style="max-height: 220px">
