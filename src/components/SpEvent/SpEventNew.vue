@@ -60,6 +60,7 @@ import { ISpUser } from "@/types/entities/user";
 
 // Services
 import { safeMethod } from "@/services/safeMethod";
+import { getUsers } from "@/services/queries";
 
 // Gql
 const CREATE_EVENT_MUTATION = gql`
@@ -131,18 +132,9 @@ export default defineComponent({
       route.push({ name: "Events" });
     };
 
-    const getUsers = async (): Promise<void> => {
+    const getUsersOptions = async (): Promise<void> => {
       try {
-        const {
-          data: { spUsers }
-        }: { data: { spUsers: ISpUser[] } } = await apolloClient.query({
-          query: USERS_QUERY,
-          variables: {
-            idIn: currentUser.friends || []
-          }
-        });
-
-        participants.value = spUsers;
+        participants.value = await getUsers({ options: { idIn: currentUser.friends || [] }, query: USERS_QUERY });
       } catch (err: any) {
         $q.notify({
           message: err.message,
@@ -151,7 +143,7 @@ export default defineComponent({
       }
     };
 
-    await safeMethod(getUsers);
+    await safeMethod(getUsersOptions);
 
     const deleteParticipant = (participant: ISpParticipantUpload | ISpUser) => {
       spEvent.value.participants = spEvent.value.participants?.filter((p) => p._id !== participant._id);
