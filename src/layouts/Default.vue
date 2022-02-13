@@ -1,5 +1,5 @@
 <template>
-  <q-layout container style="height: 90vh" class="default-layout">
+  <q-layout container style="height: 94vh" class="default-layout">
     <q-header class="bg-white text-black">
       <h4 style="line-height: 0.2rem">{{ title }}</h4>
     </q-header>
