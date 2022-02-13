@@ -15,6 +15,7 @@
           hint="Friend name*"
           class="q-mt-md"
           option-label="name"
+          behavior="menu"
           :options="optionalFriends"
           @filter="filterFriends"
         >
