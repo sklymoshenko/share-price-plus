@@ -1,4 +1,5 @@
 import { ISpParticipant, ISpParticipantUpload } from "../spPeopleConfig";
+import { ISpUser } from "./user";
 
 export interface ISpEvent {
   _id: string;
@@ -13,14 +14,14 @@ export interface ISpEvent {
 }
 
 export interface ISpEventUpload {
-  participants?: ISpParticipantUpload[];
-  name?: string;
-  price?: number;
-  each?: number;
-  peopleCount?: number;
-  isClosed?: boolean;
-  createdAt?: string;
-  closedAt?: string;
+  userName: ISpUser["name"];
+  userId: ISpUser["_id"];
+  change: {
+    participants?: ISpParticipantUpload[];
+    name?: string;
+    isClosed?: boolean;
+    closedAt?: string;
+  };
 }
 
 export interface IEventPayedPayload {

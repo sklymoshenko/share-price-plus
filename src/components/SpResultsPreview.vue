@@ -60,14 +60,15 @@ export default defineComponent({
 
     const preview = computed(() => {
       return participantsCopy.value.map((conf) => {
-        const returnsArray = conf.loaners
-          .map((loaner) => {
-            const name = participantsCopy.value.find((pc) => pc._id === loaner._id)?.name;
-            if (!name) return;
+        const returnsArray =
+          conf.loaners
+            ?.map((loaner) => {
+              const name = participantsCopy.value.find((pc) => pc._id === loaner._id)?.name;
+              if (!name) return;
 
-            return { label: `Returns to ${name}: ${loaner.paid}` };
-          })
-          .filter(Boolean);
+              return { label: `Returns to ${name}: ${loaner.paid}` };
+            })
+            .filter(Boolean) || [];
 
         return {
           label: conf.name,

@@ -79,7 +79,14 @@ export default defineComponent({
       const payload: { updateEventId: ISpEvent["_id"]; data: ISpEventUpload } = {
         updateEventId: spEvent.value._id,
         data: {
-          participants: [...spEvent.value.participants, ...participants]
+          userId: currentUser.value._id,
+          userName: currentUser.value.name,
+          change: {
+            participants: [...spEvent.value.participants, ...participants].map((p) => ({
+              _id: p._id,
+              name: p.name
+            }))
+          }
         }
       };
 
@@ -94,7 +101,15 @@ export default defineComponent({
       const payload: { updateEventId: ISpEvent["_id"]; data: ISpEventUpload } = {
         updateEventId: spEvent.value._id,
         data: {
-          participants: participants
+          userId: currentUser.value._id,
+          userName: currentUser.value.name,
+          change: {
+            participants: participants.map((p) => ({
+              _id: p._id,
+              paid: p.paid,
+              name: p.name
+            }))
+          }
         }
       };
 
@@ -120,8 +135,12 @@ export default defineComponent({
       const payload: { updateEventId: ISpEvent["_id"]; data: ISpEventUpload } = {
         updateEventId: spEvent.value._id,
         data: {
-          isClosed: true,
-          closedAt: new Date().toISOString()
+          userId: currentUser.value._id,
+          userName: currentUser.value.name,
+          change: {
+            isClosed: true,
+            closedAt: new Date().toISOString()
+          }
         }
       };
 
