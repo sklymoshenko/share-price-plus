@@ -8,6 +8,8 @@
         clearable
         @update:model-value="updatePeopleCount"
         :hint="'How many people had fun with me?'"
+        maxlength="2"
+        :rules="[(val) => val <= 50 || 'Maximum 50 people']"
       />
     </div>
 
@@ -21,7 +23,15 @@
         @click="decreasePeopleCount"
         :disable="peopleCount === 2"
       />
-      <q-btn round color="secondary" icon="arrow_upward" size="md" class="q-ml-md" @click="increasePeopleCount" />
+      <q-btn
+        round
+        color="secondary"
+        icon="arrow_upward"
+        size="md"
+        class="q-ml-md"
+        @click="increasePeopleCount"
+        :disable="peopleCount === 50"
+      />
     </div>
   </div>
 </template>
@@ -52,7 +62,9 @@ export default defineComponent({
     };
 
     const increasePeopleCount = (): void => {
-      peopleCount.value++;
+      if (peopleCount.value < 50) {
+        peopleCount.value++;
+      }
       emit("update:people", peopleCount.value);
     };
 

@@ -5,6 +5,7 @@
     v-else-if="spEvent?.isClosed"
     :price="spEvent.price"
     :participants="spEvent.participants"
+    :event-id="spEvent._id"
     hide-buttons
   />
 </template>

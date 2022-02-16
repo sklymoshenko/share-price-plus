@@ -14,11 +14,6 @@ export const UPDATE_EVENT = gql`
         paid
         ows
         exceed
-        loaners {
-          _id
-          name
-          paid
-        }
       }
       isClosed
       closedAt

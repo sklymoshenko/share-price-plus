@@ -30,6 +30,7 @@ function splitExceeds(participants: ISpParticipant[]): void {
 
     for (const debtor of debtors) {
       if (!participant.exceed) continue;
+      if (!debtor.loaners) debtor.loaners = [];
       // Checking how much debtor can pay
       const diff = participant.exceed - debtor.ows;
       if (diff > 0) {

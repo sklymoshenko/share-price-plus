@@ -20,6 +20,7 @@
       <q-btn color="secondary" label="New" @click="$emit('new')" class="q-mt-md" />
     </div>
   </div>
+  <SpEventEditHistory v-if="eventId" :event-id="eventId" />
 </template>
 
 <script lang="ts">
@@ -27,6 +28,7 @@ import { computed, defineComponent, PropType, ref, toRefs } from "vue";
 
 // Types
 import { ISpParticipant } from "../types/spPeopleConfig";
+import { ISpEvent } from "@/types/entities/event";
 
 // Services
 import { calculateResults } from "@/services/calculations";
@@ -35,9 +37,13 @@ import { calculateResults } from "@/services/calculations";
 // @ts-ignore
 import cloneDeep from "lodash/cloneDeep";
 
+// Components
+import SpEventEditHistory from "./SpEvent/SpEventEdit/SpEventEditHistory.vue";
+
 export default defineComponent({
   name: "SpResultsPreview",
   emits: ["edit", "new"],
+  components: { SpEventEditHistory },
   props: {
     participants: {
       type: Array as PropType<ISpParticipant[]>,
@@ -50,6 +56,9 @@ export default defineComponent({
     hideButtons: {
       type: Boolean,
       default: true
+    },
+    eventId: {
+      type: String as PropType<ISpEvent["_id"]>
     }
   },
   setup(props) {
@@ -60,14 +69,15 @@ export default defineComponent({
 
     const preview = computed(() => {
       return participantsCopy.value.map((conf) => {
-        const returnsArray = conf.loaners
-          .map((loaner) => {
-            const name = participantsCopy.value.find((pc) => pc._id === loaner._id)?.name;
-            if (!name) return;
+        const returnsArray =
+          conf.loaners
+            ?.map((loaner) => {
+              const name = participantsCopy.value.find((pc) => pc._id === loaner._id)?.name;
+              if (!name) return;
 
-            return { label: `Returns to ${name}: ${loaner.paid}` };
-          })
-          .filter(Boolean);
+              return { label: `Returns to ${name}: ${loaner.paid}` };
+            })
+            .filter(Boolean) || [];
 
         return {
           label: conf.name,

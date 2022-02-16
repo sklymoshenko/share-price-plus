@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md row items-start">
+  <div class="q-pa-md column items-start">
     <div class="text-left">
       <div class="text-h6">Add User Friends</div>
       <div class="text-caption">List of people you can interract in events</div>

@@ -31,15 +31,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, toRefs } from "vue";
-import { apolloClient } from "@/services/apollo";
-import gql from "graphql-tag";
 
 // Types
 import { ISpEvent } from "@/types/entities/event";
 import { ISpUser } from "@/types/entities/user";
 
 import { ISpParticipant } from "@/types/spPeopleConfig";
-import { USERS_QUERY } from "@/gql/queries/spUser";
 import { safeMethod } from "@/services/safeMethod";
 import { getUsers } from "@/services/queries";
 
