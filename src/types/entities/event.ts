@@ -64,5 +64,5 @@ export interface ISpEventHistoryItem {
   userId: string;
   userName: string;
   change: ISpEventHistoryItemChange;
-  createdAt: Date;
+  createdAt: string;
 }

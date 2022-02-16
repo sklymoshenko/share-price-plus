@@ -11,17 +11,22 @@
     <div class="new column q-pa-sm">
       <div v-if="!history.length" class="empty-history">There is no history so far</div>
       <div class="full-history">
-        <q-list bordered>
-          <q-item v-for="(item, i) in mappedHistory" :key="i" class="q-my-sm" clickable v-ripple>
+        <q-list>
+          <q-item v-for="(item, i) in mappedHistory" :key="i" clickable v-ripple>
             <q-item-section avatar>
-              <q-avatar>
+              <q-avatar class="history-item-avatar">
                 <img :src="avatar" />
               </q-avatar>
             </q-item-section>
 
-            <q-item-section>
-              <q-item-label>{{ item.name }}</q-item-label>
-              <q-item-label caption lines="1" v-if="item.paid">{{ item.paid }}</q-item-label>
+            <q-item-section class="items-start">
+              <q-item-label>
+                <span class="text-subtitle2">{{ item.name }}</span>
+              </q-item-label>
+              <q-item-label caption lines="1" v-if="item.paid">-{{ item.paid }} ₮</q-item-label>
+            </q-item-section>
+            <q-item-section side top caption>
+              <span class="text-caption">{{ mainFormat(item.date) }}</span>
             </q-item-section>
           </q-item>
         </q-list>
@@ -40,6 +45,7 @@ import { ISpEvent, ISpEventHistoryItem } from "@/types/entities/event";
 // Services
 import { safeMethod } from "@/services/safeMethod";
 import { apolloClient } from "@/services/apollo";
+import { mainFormat } from "@/services/dates";
 
 // Gql
 import { EVENTS_HISTORY_QUERY } from "@/gql/queries/spEvents";
@@ -88,9 +94,9 @@ export default defineComponent({
       return mapped;
     });
 
-    return { getEventHistory: () => safeMethod(getEventHistory), history, mappedHistory, avatar };
+    return { getEventHistory: () => safeMethod(getEventHistory), history, mappedHistory, avatar, mainFormat };
   }
 });
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>
