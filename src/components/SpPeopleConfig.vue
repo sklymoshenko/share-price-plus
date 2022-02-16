@@ -18,6 +18,11 @@
       :hint="'Amount of shakels that fellow has spent'"
       class="q-mt-md"
       :disable="disableInputs"
+      maxlength="7"
+      :rules="[
+        (val) =>
+          val <= 1000000 || 'Wow, email me his/her number. I need some money too. Amount should be less or equal to 1M'
+      ]"
     />
     <q-btn
       :ripple="{ center: true }"
@@ -97,7 +102,10 @@ export default defineComponent({
       }
 
       neededPerson.name = person.value.name;
-      neededPerson.paid = person.value.paid;
+
+      if (person.value.paid <= 1000000) {
+        neededPerson.paid = person.value.paid;
+      }
 
       emit("update:participants", persons.value);
 

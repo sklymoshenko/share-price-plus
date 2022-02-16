@@ -7,7 +7,9 @@
         filled
         clearable
         @update:model-value="updatePrice"
+        maxlength="7"
         :hint="'Hmmmm how much did we spent this time?'"
+        :rules="[(val) => val <= 1000000 || 'Wow, cant pay that much! Enter amount less or equal to 1M']"
       />
     </div>
   </div>
@@ -28,7 +30,7 @@ export default defineComponent({
     const totallPrice = ref<number>(price);
 
     const updatePrice = (value: number | string | null): void => {
-      let newValue: number | string | null = value;
+      let newValue = value;
 
       // checking for null
       if (typeof newValue === "object") {
