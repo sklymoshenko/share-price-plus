@@ -45,7 +45,6 @@
 import { defineComponent, PropType, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
-import { apolloClient } from "@/services/apollo";
 import { useMutation } from "@vue/apollo-composable";
 import { useStore } from "@/store/store";
 import gql from "graphql-tag";
@@ -54,7 +53,7 @@ import gql from "graphql-tag";
 import SpPersonItem from "../SpPersonItem.vue";
 
 // Types
-import { ISpEventUpload } from "@/types/entities/event";
+import { ISpEventCreate } from "@/types/entities/event";
 import { ISpParticipantUpload } from "@/types/spPeopleConfig";
 import { ISpUser } from "@/types/entities/user";
 
@@ -105,7 +104,7 @@ export default defineComponent({
 
     const participants = ref<Pick<ISpUser, "_id" | "name">[]>([]);
 
-    const spEvent = ref<ISpEventUpload>({
+    const spEvent = ref<ISpEventCreate>({
       name: "",
       participants: [{ _id: currentUser._id, paid: 0, name: currentUser.name }]
     });

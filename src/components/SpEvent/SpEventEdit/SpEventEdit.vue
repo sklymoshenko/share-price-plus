@@ -14,6 +14,7 @@
     :sp-event="spEvent"
     @addParticipants="addParticipants"
   />
+  <SpEventEditHistory :event-id="spEvent._id" />
   <div class="sp-event-edit__close flex q-mt-lg">
     <q-btn outline color="primary" label="Close And Calculate" @click="closeEvent" />
   </div>
@@ -32,6 +33,7 @@ import { ISpParticipant } from "@/types/spPeopleConfig";
 import SpEventEditMainInfo from "./SpEventEditMainInfo.vue";
 import SpEventEditUser from "./SpEventEditUser.vue";
 import SpEventEditParticipants from "./SpEventEditParticipants.vue";
+import SpEventEditHistory from "./SpEventEditHistory.vue";
 
 // lodash
 // @ts-ignore
@@ -45,7 +47,7 @@ import { safeMethod } from "@/services/safeMethod";
 
 export default defineComponent({
   name: "SpEventEdit",
-  components: { SpEventEditMainInfo, SpEventEditUser, SpEventEditParticipants },
+  components: { SpEventEditMainInfo, SpEventEditUser, SpEventEditParticipants, SpEventEditHistory },
   props: {
     spEvent: {
       type: Object as PropType<ISpEvent>,
