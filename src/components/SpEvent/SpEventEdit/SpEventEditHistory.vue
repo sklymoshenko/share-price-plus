@@ -24,6 +24,7 @@
                 <span class="text-subtitle2">{{ item.name }}</span>
               </q-item-label>
               <q-item-label caption lines="1" v-if="item.paid">-{{ item.paid }} ₮</q-item-label>
+              <q-item-label caption lines="1" v-if="item.isClosed">Closed event</q-item-label>
             </q-item-section>
             <q-item-section side top caption>
               <span class="text-caption">{{ mainFormat(item.date) }}</span>
@@ -73,23 +74,26 @@ export default defineComponent({
     };
 
     const mappedHistory = computed(() => {
-      const mapped = history.value.map((h) => {
-        let item = {
-          name: h.userName,
-          action: "changed",
-          paid: 0,
-          date: h.createdAt
-        };
+      const mapped = history.value
+        .map((h) => {
+          let item = {
+            name: h.userName,
+            action: "changed",
+            paid: 0,
+            date: h.createdAt,
+            isClosed: h.change.isClosed
+          };
 
-        if (h.change.participants) {
-          const participant = h.change.participants[0];
-          item.name = participant.name;
-          item.paid = participant.paid;
-          item.action = "payed";
-        }
+          if (h.change.participants?.length) {
+            const participant = h.change.participants[0];
+            item.name = participant.name;
+            item.paid = participant.paid;
+            item.action = "payed";
+          }
 
-        return item;
-      });
+          return item;
+        })
+        .sort((a, b) => +new Date(b.date) - +new Date(a.date));
 
       return mapped;
     });
