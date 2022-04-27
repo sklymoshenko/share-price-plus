@@ -105,7 +105,6 @@ export default defineComponent({
       } = (await signUp()) as { data: { register: ISpUser } };
 
       store.commit("setCurrentUser", register);
-      localStorage.setItem("spid", register._id);
       router.push("/");
     };
 

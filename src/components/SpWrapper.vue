@@ -12,6 +12,7 @@ import { computed, defineComponent } from "vue";
 import SpMain from "@/pages/SpMain.vue";
 import { ISpUser } from "@/types/entities/user";
 import { useStore } from "@/store/store";
+import { getAuthCookie } from "@/services/calculations";
 
 export default defineComponent({
   name: "SpWrapper",
@@ -19,7 +20,7 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const currentUser = computed<ISpUser | null>(() => store.state.currentUser);
-    const isAuthenticated = localStorage.getItem("spid");
+    const isAuthenticated = !!getAuthCookie();
     // We want to get a currentUser from server when refresh and already authenticated
     if (!currentUser.value && isAuthenticated) {
       await store.dispatch("getCurrentUser");

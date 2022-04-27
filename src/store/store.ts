@@ -8,14 +8,21 @@ import { apolloClient } from "@/services/apollo";
 // Queries
 import { EVENTS_QUERY } from "@/gql/queries/spEvents";
 import { CURRENT_USER } from "@/gql/queries/spCurrentUser";
-import { USERS_QUERY } from "@/gql/queries/spUser";
 import { UPDATE_EVENT } from "@/gql/mutations/updateEvent";
 import { getUsers } from "@/services/queries";
+import { router } from "@/router/router";
 
 export interface State {
   currentUser: ISpUser | null;
   spEvents: ISpEvent[] | null;
   currentEvent: ISpEvent | null;
+}
+
+interface CurrentUserResponse {
+  data?: {
+    currentUser: ISpUser;
+  };
+  errors?: { message: string }[];
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -39,13 +46,20 @@ export const store = createStore<State>({
   },
   actions: {
     async getCurrentUser({ commit }): Promise<void> {
-      const {
-        data: { currentUser }
-      }: { data: { currentUser: ISpUser } } = await apolloClient.query({
+      // Well apparantly apollo.query return just data obj in typescript and no error ??
+      const response: any = await apolloClient.query<CurrentUserResponse>({
         query: CURRENT_USER
       });
 
-      commit("setCurrentUser", currentUser);
+      const { data, errors } = response;
+
+      if (errors?.[0].message.includes("Auth")) {
+        commit("setCurrentUser", null);
+        router.push("/signin");
+        return;
+      }
+
+      commit("setCurrentUser", data?.currentUser);
     },
     async getCurrentEvent({ commit }, id: ISpEvent["_id"]): Promise<void> {
       if (!id) return;

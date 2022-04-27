@@ -60,3 +60,14 @@ function splitExceeds(participants: ISpParticipant[]): void {
     }
   }
 }
+
+export const getAuthCookie = (): string | undefined => {
+  if (!document.cookie) return;
+
+  const [, cookie] = document.cookie
+    .split("; ")
+    .find((c) => c.startsWith("spid"))
+    ?.split("=") as string[];
+
+  return cookie;
+};

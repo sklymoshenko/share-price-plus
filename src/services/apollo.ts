@@ -4,19 +4,13 @@ import { getMainDefinition } from "@apollo/client/utilities";
 const IS_PROD = process.env.NODE_ENV === "production";
 const httpLink = new HttpLink({
   // You should use an absolute URL here
-
-  // For development
-  // uri: "http://localhost:4000/graphql",
-
   uri: IS_PROD ? "https://share-price-plus-server.herokuapp.com/graphql" : "http://localhost:4000/graphql",
   credentials: "include"
 });
 
 // Create the subscription websocket link
 const wsLink = new WebSocketLink({
-  //For development
-  // uri: "ws://localhost:4000/graphql",
-
+  // You should use an absolute URL here
   uri: IS_PROD ? "wss://share-price-plus-server.herokuapp.com/graphql" : "ws://localhost:4000/graphql",
   options: {
     reconnect: true
